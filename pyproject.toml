@@ -47,10 +47,10 @@ rust = [
 all = ["synthfuse[dev,rust]"]
 
 [project.urls]
-Homepage = "https://github.com/deskiziarecords/synthfuse"
-Documentation = "https://synthfuse.readthedocs.io"
-Repository = "https://github.com/deskiziarecords/synthfuse"
-Issues = "https://github.com/deskiziarecords/synthfuse/issues"
+Homepage = "https://github.com/deskiziarecords/Synth-fuse"
+Documentation = "https://synthfuse.works"
+Repository = "https://github.com/deskiziarecords/Synth-fuse"
+Issues = "https://github.com/deskiziarecords/Synth-fuse/issues"
 
 [project.scripts]
 alj = "synthfuse.tools.repl:main"
