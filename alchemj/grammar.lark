@@ -1,0 +1,76 @@
+// =========================================================
+//  ALCHEM-J Grammar  (v0xA1)  –  J. Roberto Jiménez + K2
+// =========================================================
+
+// ---------------------------------------------------------
+// 0. Top-level spell
+// ---------------------------------------------------------
+spell: composite
+
+composite
+    : composite OP_SEQ unary               -> seq
+    | composite OP_PAR unary               -> par
+    | composite OP_GUARD unary             -> guard
+    | unary
+
+unary
+    : SYMBOL params                        -> prim
+    | "(" composite ")"                    -> paren
+    | lambda                               -> lam
+
+lambda
+    : "λ" PARAM_LIST "⭢" composite         -> lambda_expr
+
+// ---------------------------------------------------------
+// 1. Symbols (registered primitives)
+// ---------------------------------------------------------
+SYMBOL: /[𝕀ℝ𝕃𝕊ℤℂ𝜑𝕋𝕍𝕎𝔻]+/      // single-codepoint math symbols
+
+// ---------------------------------------------------------
+// 2. Parameters
+// ---------------------------------------------------------
+params: "(" arg_list? ")"                -> params
+      |                                   -> no_params
+
+arg_list: arg ("," arg)*
+arg: NAME "=" value
+
+value: NUMBER
+     | STRING
+     | BOOLEAN
+     | NAME                         // identifier (enum-like)
+     | dict
+     | list
+
+dict: "{" (keyval ("," keyval)*)? "}"
+keyval: STRING ":" value
+
+list: "[" (value ("," value)*)? "]"
+
+// ---------------------------------------------------------
+// 3. Operators (left-associative)
+// ---------------------------------------------------------
+OP_SEQ : "⊗"
+OP_PAR : "⊕"
+OP_GUARD: "∘"
+
+// ---------------------------------------------------------
+// 4. Lambda binder
+// ---------------------------------------------------------
+PARAM_LIST: NAME ("," NAME)*
+
+// ---------------------------------------------------------
+// 5. Terminals
+// ---------------------------------------------------------
+NUMBER  : /-?\d+(\.\d+)?([eE][+-]?\d+)?/
+STRING  : /"[^"]*"/
+BOOLEAN : "true" | "false"
+NAME    : /[a-zA-Z_][a-zA-Z0-9_]*/
+
+// ---------------------------------------------------------
+// 6. Ignore whitespace & comments
+// ---------------------------------------------------------
+%import common.WS
+%ignore WS
+COMMENT: /\/\/[^\n]*/
+%ignore COMMENT

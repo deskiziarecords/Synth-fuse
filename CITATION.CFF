@@ -1,0 +1,43 @@
+# ----------------------------------------------------------
+#  Synth-Fuse  –  Zenodo-ready citation file
+#  Insert repo root; tag → Zenodo → DOI
+# ----------------------------------------------------------
+cff-version: 1.2.0
+title: "Synth-Fuse: A Modular Fusion Library for Hybrid Swarm–RL–Numerical Intelligence"
+message: "If you use Synth-Fuse, please cite this software via the DOI provided by Zenodo."
+type: software
+authors:
+  - family-names: "Jimenez"
+    given-names: "J. Roberto"
+    orcid: "https://orcid.org/0009-0007-1334-0978"
+    email: "tijuanapaint@gmail.com"
+  - family-names: "K2"
+    given-names: "Kimi"
+    email: "kimi@moonshot.cn"
+abstract: >
+  Synth-Fuse is a JAX-native functional fusion engine that composes
+  heterogeneous optimisation, reinforcement-learning and numerical
+  algorithms into a single, differentiable, hardware-scalable execution graph.
+  Every algorithm is a plugin; every fusion is a pipeline; every pipeline
+  is a JAX transform.
+version: 0.1.0-alpha
+date-released: 2026-01-17
+license: Apache-2.0
+repository-code: "https://github.com/deskiziarecords/Synth-fuse"
+url: "https://synthfuse.works"
+keywords:
+  - JAX
+  - operator fusion
+  - swarm intelligence
+  - reinforcement learning
+  - numerical optimisation
+  - hybrid algorithms
+references:
+  - type: software
+    title: "ALCHEM-J Language Specification"
+    authors:
+      - family-names: "Jimenez"
+        given-names: "J. Roberto"
+      - family-names: "K2"
+        given-names: "Kimi"
+    url: "https://github.com/deskiziarecords/Synth-fuse/docs/alchemj.pdf"
