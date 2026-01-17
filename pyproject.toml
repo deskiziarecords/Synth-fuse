@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling", "hatch-jax"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "synthfuse"
@@ -21,7 +21,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
 dependencies = [
@@ -31,64 +30,29 @@ dependencies = [
     "chex>=0.1.84",
     "lark>=1.1.8",
     "svgwrite>=1.4.3",
+    "rich>=13.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4",
-    "pytest-xdist>=3.5",
     "ruff>=0.6",
-    "mypy>=1.8",
-    "pre-commit>=3.5",
 ]
-rust = [
-    "maturin>=1.7",        # for native Rust extensions
-]
-all = ["synthfuse[dev,rust]"]
 
 [project.urls]
 Homepage = "https://github.com/deskiziarecords/Synth-fuse"
-Documentation = "https://synthfuse.works"
 Repository = "https://github.com/deskiziarecords/Synth-fuse"
 Issues = "https://github.com/deskiziarecords/Synth-fuse/issues"
 
 [project.scripts]
 alj = "synthfuse.tools.repl:main"
 sfbench = "synthfuse.systems.bench:main"
+sfmonitor = "synthfuse.tools.monitor:main"
 sfviz = "synthfuse.tools.viz:main"
 
-[project.scripts]
-sfmonitor = "synthfuse.tools.monitor:cli"
-
-[tool.hatch.build.targets.wheel]
-packages = ["synthfuse"]
-
-[tool.hatch.build.targets.sdist]
-include = [
-    "/synthfuse",
-    "/README.md",
-    "/LICENSE",
-]
+[tool.setuptools.packages.find]
+include = ["synthfuse*"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
-select = ["E", "F", "I", "W", "B", "C90", "N", "UP", "ANN", "S", "FBT", "TID", "ARG", "DTZ", "ERA", "PD", "PGH", "PL", "TRY", "FLY", "NPY", "RUF"]
-ignore = ["ANN101", "S101", "FBT001"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = "test_*.py"
-addopts = "-n auto --tb=short"
-
-def cli():
-    import argparse, jax
-    ap = argparse.ArgumentParser(description="Live Orion-STCL telemetry")
-    ap.add_argument("--steps", type=int, default=500)
-    ap.add_argument("--refresh", type=float, default=0.1)
-    args = ap.parse_args()
-    from synthfuse.systems.orion import make_orion_stcl
-    step, state = make_orion_stcl(jax.random.normal(jax.PRNGKey(0), (64, 32)),
-                                  jax.random.normal(jax.PRNGKey(1), (32,)),
-                                  beta_init=0.8, sigma_init=1.2)
-    monitor_loop(step, state, args.steps, args.refresh)

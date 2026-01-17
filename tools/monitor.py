@@ -95,3 +95,15 @@ def to_csv(monitor: AlchemMonitor, path: Path):
     import pandas as pd
     df = pd.DataFrame(monitor.history)
     df.to_csv(path, index=False)
+    
+    def cli():
+    import argparse, jax
+    ap = argparse.ArgumentParser(description="Live Orion-STCL telemetry")
+    ap.add_argument("--steps", type=int, default=500)
+    ap.add_argument("--refresh", type=float, default=0.1)
+    args = ap.parse_args()
+    from synthfuse.systems.orion import make_orion_stcl
+    step, state = make_orion_stcl(jax.random.normal(jax.PRNGKey(0), (64, 32)),
+                                  jax.random.normal(jax.PRNGKey(1), (32,)),
+                                  beta_init=0.8, sigma_init=1.2)
+    monitor_loop(step, state, args.steps, args.refresh)
