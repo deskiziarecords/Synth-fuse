@@ -5,6 +5,7 @@
 [![PyPI](https://img.shields.io/pypi/v/synthfuse)](https://pypi.org/project/synthfuse/)
 [![Python](https://img.shields.io/pypi/pyversions/synthfuse)](https://pypi.org/project/synthfuse/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue) 
+[![DOI](https://zenodo.org/badge/1136013621.svg)](https://doi.org/10.5281/zenodo.18289083)
 
 Synth-Fuse is a **JAX-native fusion engine** that composes **swarm intelligence**, **reinforcement learning**, and **numerical algorithms** into a **single, differentiable, hardware-scalable execution graph**—written as **one-line spells**.
 
