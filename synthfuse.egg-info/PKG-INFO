@@ -4,9 +4,9 @@ Version: 0.1.0a1
 Summary: ALCHEM-J: operator-fusion language for swarm-RL-numeric hybrids
 Author-email: "J. Roberto Jimenez" <tijuanapaint@gmail.com>, Kimi-K2 <kimi@moonshot.cn>
 License: Apache-2.0
-Project-URL: Homepage, https://github.com/deskiziarecords/synthfuse
-Project-URL: Repository, https://github.com/deskiziarecords/synthfuse
-Project-URL: Issues, https://github.com/deskiziarecords/synthfuse/issues
+Project-URL: Homepage, https://github.com/deskiziarecords/Synth-fuse
+Project-URL: Repository, https://github.com/deskiziarecords/Synth-fuse
+Project-URL: Issues, https://github.com/deskiziarecords/Synth-fuse/issues
 Keywords: jax,fusion,swarm,rl,optimization
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Science/Research
