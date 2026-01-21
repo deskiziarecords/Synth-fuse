@@ -110,6 +110,8 @@ ns-aquaforte = "synthfuse.recipes.ns_aquaforte.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["synthfuse*", "alchemj*"]
+
 
 [tool.setuptools.package-data]
 synthfuse = [
