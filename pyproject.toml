@@ -109,8 +109,7 @@ sfviz = "synthfuse.tools.viz:main"
 ns-aquaforte = "synthfuse.recipes.ns_aquaforte.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["synthfuse", "synthfuse.*", "alchemj*"]
-
+where = ["src"]
 
 [tool.setuptools.package-data]
 synthfuse = [
