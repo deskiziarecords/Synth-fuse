@@ -1,6 +1,16 @@
 LICENSE
 README.md
 pyproject.toml
+alchemj/__init__.py
+alchemj/compiler.py
+alchemj/registry.py
+alchemj/plugins/__init__.py
+alchemj/plugins/numeric.py
+alchemj/plugins/orion.py
+alchemj/plugins/rl.py
+alchemj/plugins/sat.py
+alchemj/plugins/swarm.py
+alchemj/plugins/util.py
 synthfuse.egg-info/PKG-INFO
 synthfuse.egg-info/SOURCES.txt
 synthfuse.egg-info/dependency_links.txt
