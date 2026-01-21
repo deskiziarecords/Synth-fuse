@@ -94,8 +94,6 @@ colab = [
     "python-sat>=0.1.8.dev1",
     "z3-solver>=4.12.0",
 ]
-[tool.setuptools.packages.find]
-include = ["synthfuse", "synthfuse.*"]
 
 [project.urls]
 Homepage = "https://github.com/deskiziarecords/Synth-fuse"
@@ -111,7 +109,8 @@ sfviz = "synthfuse.tools.viz:main"
 ns-aquaforte = "synthfuse.recipes.ns_aquaforte.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["synthfuse*", "alchemj*"]
+include = ["synthfuse", "synthfuse.*", "alchemj*"]
+
 
 [tool.setuptools.package-data]
 synthfuse = [
