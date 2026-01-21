@@ -5,15 +5,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "synthfuse"
 version = "0.1.0"
-description = "ALCHEM-J: operator-fusion language for swarm-RL-numeric hybrids"
+description = "Single-kernel algorithm fusion for JAX: swarm, RL, and numerical hybrids"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "Apache-2.0"}
 authors = [
     {name = "J. Roberto Jimenez", email = "tijuanapaint@gmail.com"},
-    {name = "Kimi-K2", email = "kimi@moonshot.cn"},
+    {name = "Kimi-K2", email = "kimi@moonshot.cn"}
 ]
-keywords = ["jax", "fusion", "swarm", "rl", "optimization"]
+keywords = ["jax", "fusion", "swarm", "rl", "optimization", "sat", "compiler", "open-gate"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
@@ -21,39 +21,123 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Mathematics"
 ]
 
+# Core: Pure algorithmic engine — NO LLMs
 dependencies = [
     "jax>=0.4.35",
     "jaxlib>=0.4.35",
     "optax>=0.1.7",
     "chex>=0.1.84",
+    "numpy>=1.24.0",
+    "scipy>=1.11.0",
     "lark>=1.1.8",
     "svgwrite>=1.4.3",
     "rich>=13.0",
+    "pandas>=2.0.0",
+    "python-sat>=0.1.8.dev1",      # MiniSAT, Glucose, etc. bindings
+    "z3-solver>=4.12.0",           # For symbolic verification
 ]
 
 [project.optional-dependencies]
+# Minimal set for SAT research & Colab
+sat-bench = [
+    "tqdm>=4.66.0",
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
+]
+
+# Local LLM support (Phi-3, etc.) — opt-in only
+llm-local = [
+    "transformers>=4.36.0",
+    "torch>=2.1.0",
+    "accelerate>=0.25.0",
+    "sentencepiece>=0.2.0",
+]
+
+# Cloud LLMs (keep separate)
+llm-cloud = [
+    "openai>=1.12.0",
+    # anthropic intentionally omitted from default
+]
+
+# Full scientific stack
+scientific = [
+    "networkx>=3.2",
+    "scikit-learn>=1.4.0",
+    "sympy>=1.12",
+]
+
+# Dev tools
 dev = [
     "pytest>=7.4",
+    "pytest-cov>=4.1",
     "ruff>=0.6",
+    "black>=24.0",
+    "mypy>=1.8",
+]
+
+# All extras (for full hybrid mode)
+all = [
+    "synthfuse[sat-bench]",
+    "synthfuse[llm-local]",
+    "synthfuse[scientific]",
+    "synthfuse[dev]",
+]
+
+# Lightweight for Google Colab (no LLM, no dev)
+colab = [
+    "matplotlib>=3.8.0",
+    "tqdm>=4.66.0",
+    "python-sat>=0.1.8.dev1",
+    "z3-solver>=4.12.0",
 ]
 
 [project.urls]
 Homepage = "https://github.com/deskiziarecords/Synth-fuse"
 Repository = "https://github.com/deskiziarecords/Synth-fuse"
 Issues = "https://github.com/deskiziarecords/Synth-fuse/issues"
+Documentation = "https://github.com/deskiziarecords/Synth-fuse/tree/main/docs"
 
 [project.scripts]
-synthfuse = "synthfuse.tools.repl:main"
 alj = "synthfuse.tools.repl:main"
 sfbench = "synthfuse.systems.bench:main"
 sfmonitor = "synthfuse.tools.monitor:main"
 sfviz = "synthfuse.tools.viz:main"
+ns-aquaforte = "synthfuse.recipes.ns_aquaforte.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["synthfuse*"]
+include = ["synthfuse*", "alchemj*"]
+
+[tool.setuptools.package-data]
+synthfuse = [
+    "recipes/**/*.py",
+    "alchemj/grammar/*.lark",
+    "data/benchmarks/*.cnf"
+]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = ["--strict-markers", "--cov=synthfuse"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
