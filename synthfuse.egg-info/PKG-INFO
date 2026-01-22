@@ -1,0 +1,64 @@
+Metadata-Version: 2.4
+Name: synthfuse
+Version: 0.1.0
+Summary: Single-kernel algorithm fusion for JAX: swarm, RL, and numerical hybrids
+Author-email: "J. Roberto Jimenez" <tijuanapaint@gmail.com>, Kimi-K2 <kimi@moonshot.cn>
+License: Apache-2.0
+Project-URL: Homepage, https://github.com/deskiziarecords/Synth-fuse
+Project-URL: Repository, https://github.com/deskiziarecords/Synth-fuse
+Project-URL: Issues, https://github.com/deskiziarecords/Synth-fuse/issues
+Project-URL: Documentation, https://github.com/deskiziarecords/Synth-fuse/tree/main/docs
+Keywords: jax,fusion,swarm,rl,optimization,sat,compiler,open-gate
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: jax>=0.4.35
+Requires-Dist: jaxlib>=0.4.35
+Requires-Dist: optax>=0.1.7
+Requires-Dist: chex>=0.1.84
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: scipy>=1.11.0
+Requires-Dist: lark>=1.1.8
+Requires-Dist: svgwrite>=1.4.3
+Requires-Dist: rich>=13.0
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: python-sat>=0.1.8.dev1
+Requires-Dist: z3-solver>=4.12.0
+Provides-Extra: sat-bench
+Requires-Dist: tqdm>=4.66.0; extra == "sat-bench"
+Requires-Dist: matplotlib>=3.8.0; extra == "sat-bench"
+Requires-Dist: seaborn>=0.13.0; extra == "sat-bench"
+Provides-Extra: llm-local
+Requires-Dist: transformers>=4.36.0; extra == "llm-local"
+Requires-Dist: torch>=2.1.0; extra == "llm-local"
+Requires-Dist: accelerate>=0.25.0; extra == "llm-local"
+Requires-Dist: sentencepiece>=0.2.0; extra == "llm-local"
+Provides-Extra: llm-cloud
+Requires-Dist: openai>=1.12.0; extra == "llm-cloud"
+Provides-Extra: scientific
+Requires-Dist: networkx>=3.2; extra == "scientific"
+Requires-Dist: scikit-learn>=1.4.0; extra == "scientific"
+Requires-Dist: sympy>=1.12; extra == "scientific"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4; extra == "dev"
+Requires-Dist: pytest-cov>=4.1; extra == "dev"
+Requires-Dist: ruff>=0.6; extra == "dev"
+Requires-Dist: black>=24.0; extra == "dev"
+Requires-Dist: mypy>=1.8; extra == "dev"
+Provides-Extra: all
+Requires-Dist: synthfuse[sat-bench]; extra == "all"
+Requires-Dist: synthfuse[llm-local]; extra == "all"
+Requires-Dist: synthfuse[scientific]; extra == "all"
+Requires-Dist: synthfuse[dev]; extra == "all"
+Provides-Extra: colab
+Requires-Dist: matplotlib>=3.8.0; extra == "colab"
+Requires-Dist: tqdm>=4.66.0; extra == "colab"
+Requires-Dist: python-sat>=0.1.8.dev1; extra == "colab"
+Requires-Dist: z3-solver>=4.12.0; extra == "colab"
