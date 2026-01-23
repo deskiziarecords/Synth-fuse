@@ -90,3 +90,15 @@ def regulator_step(
         diverged=bool(diverged),
         halted=bool(halted)
     )
+    # In regulator_step()
+def compute_zeta_error(state) -> float:
+    if hasattr(state, 'dominant_pole'):
+        pole = state.dominant_pole
+        # Distance from unit circle (stable region: |p| ≤ 1)
+        instability = jnp.maximum(jnp.abs(pole) - 1.0, 0.0)
+        return float(instability)
+    else:
+        # Fallback: use grad norm
+        return float(state.grad_norm)
+
+E_t = compute_zeta_error(state)
