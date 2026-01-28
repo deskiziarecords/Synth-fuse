@@ -564,6 +564,16 @@ state = stcl_loop.monitor(state)
 mesh_state = thermo_mesh.step(mesh_state) # Re-align the physical manifold
 if stcl_loop.entropy > CRITICAL_THRESHOLD:
     state = gatekeeper.apply_lyapunov_clamp(state)
+# src/synthfuse/pipeline/unified_vector_pipeline.py
+
+try:
+    # The Achiever attempts to fulfill the spell
+    result = achiever.execute_goal(spell)
+except ManifoldInstabilityWarning as fever:
+    # The Physician intervenes
+    physician.apply_treatment(fever)
+    # Re-route the spell through a safer, low-energy 'Juice Solver'
+    result = achiever.retry_with_safety_buffer(spell)
 # synthfuse/__init__.py
 from .pipeline.unified_vector_pipeline import UnifiedVectorPipeline
 from .vector import LazyTensorSCP, RGFTemporalDecay, ManifoldNRO
