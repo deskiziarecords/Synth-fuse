@@ -1,18 +1,12 @@
 [package]
-name = "sfusion"
-version = "0.1.0"
+name = "synthfuse_security_core"
+version = "0.2.0"
 edition = "2021"
-authors = ["J. Roberto Jimenez <tijuanapaint@gmail.com>", "Kimi-K2"]
-license = "Apache-2.0"
-description = "Zero-copy StableHLO runner for Synth-Fuse spells"
 
 [dependencies]
-stablehlo = "0.14"
-flatbuffers = "23.5"
-mlir = "0.14"
-serde = { version = "1.0", features = ["derive"] }
-pyo3 = { version = "0.21", features = ["extension-module"] }
-
-[lib]
-name = "sfusion"
-crate-type = ["cdylib"]
+# High-speed cryptographic verification for OpenGate
+ring = "0.17.7" 
+# Fast linear algebra for Lyapunov boundary checks
+ndarray = "0.15.6"
+# Python-Rust bridge
+pyo3 = { version = "0.20.0", features = ["extension-module"] }
