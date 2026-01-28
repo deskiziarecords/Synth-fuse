@@ -159,7 +159,7 @@ Micro-bench in `tests/test_my_step.py` → open PR → **fast-merge**.
 ## 🤝 Contributing
 
 We treat PRs like **spells**: **pure**, **composable**, **JIT-ready**.  
-Read [CONTRIBUTING.md](https://www.kimi.com/chat/CONTRIBUTING.md) → open issue/PR → **fast-merge**.
+Read [CONTRIBUTING.md]
 
 -----
 ## 💬 Community
