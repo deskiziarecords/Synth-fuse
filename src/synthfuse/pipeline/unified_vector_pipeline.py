@@ -559,7 +559,11 @@ class UnifiedVectorPipeline:
                 'amgdl_lr': float(self.amgdl.lr) if self.use_amgdl else None
             }
         }
-
+# During the Fusion-Loop:
+state = stcl_loop.monitor(state)
+mesh_state = thermo_mesh.step(mesh_state) # Re-align the physical manifold
+if stcl_loop.entropy > CRITICAL_THRESHOLD:
+    state = gatekeeper.apply_lyapunov_clamp(state)
 # synthfuse/__init__.py
 from .pipeline.unified_vector_pipeline import UnifiedVectorPipeline
 from .vector import LazyTensorSCP, RGFTemporalDecay, ManifoldNRO
