@@ -1,23 +1,32 @@
 # src/synthfuse/systems/erudite.py
 import jax.numpy as jnp
 from synthfuse.tools.foundation.math_utils import zeta_transform
+from synthfuse.meta import zeta_alchemist
 
 class SystemErudite:
     """
-    The Librarian of the Synth-Fuse Manifold.
-    Manages Native Data Ingestion and Spectral Memory.
+    The Librarian. Manages the transition from Raw Data to Semantic Manifolds.
     """
-    def ingest_directory(self, path="./ingest/raw/"):
-        # 1. Byte-stream inhalation
-        # 2. Apply Zeta Transform to project into Frequency Space
-        # 3. Store as a 'Lazy Tensor' (Generation function, not raw data)
-        for data_patch in self._scan(path):
-            spectral_map = zeta_transform(data_patch)
-            self._register_in_vault(spectral_map)
+    def __init__(self, vault_path="./ingest/vault/"):
+        self.vault_path = vault_path
 
-    def retrieve_context(self, query_vector):
+    def inhale(self, file_path):
         """
-        Uses Manifold Pruning to find the data most relevant to 
-        the current 'Spell' without scanning the whole database.
+        Converts raw bytes into a Spectral Map. 
+        Implements the 'Lazy Tensor' Innovation: Don't store data, store the 
+        function that generates the data's manifold.
         """
-        return self.vault.query(query_vector, method="manifold_projection")
+        # 1. Frequency Domain Projection
+        spectral_map = zeta_alchemist.project_to_zeta(file_path)
+        
+        # 2. Assign Temporal Decay (λ)
+        # Data 'fades' over time to keep the system lean
+        decay_constant = 0.01 
+        
+        return self._save_to_vault(spectral_map, decay_constant)
+
+    def search_manifold(self, query_impulse):
+        """
+        Finds context using Manifold Pruning (O(1) cluster elimination).
+        """
+        return manifold_prune(query_impulse, self.vault_path)
