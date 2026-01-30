@@ -1,22 +1,21 @@
+# src/synthfuse/__init__.py
 
-# Core exports
+__version__ = "0.2.0"
+__author__ = "J. Roberto Jiménez"
+__email__ = "your_email@example.com"
+__license__ = "OpenGate Integrity License"
+
 from .cabinet.cabinet_orchestrator import CabinetOrchestrator
 from .sigils.compiler import SigilCompiler
 from .ingest.manager import IngestionManager
 
-# Convenience imports
 from .alchemj import (
     parse_spell,
     compile_spell,
     execute_spell,
 )
 
-# Version info
 __all__ = [
-    "__version__",
-    "__author__",
-    "__email__",
-    "__license__",
     "CabinetOrchestrator",
     "SigilCompiler", 
     "IngestionManager",
@@ -24,8 +23,12 @@ __all__ = [
     "compile_spell",
     "execute_spell",
 ]
+
 def start_engine():
     """Starts the Cabinet, Librarian, and Physician in sync."""
     print("Synth-Fuse v0.2.0: Cabinet of Alchemists is ONLINE.")
-    # Auto-watch the /ingest/ folder
-    return cabinet.start_autonomous_loop()
+    # Initialize the primary orchestrator
+    cabinet = CabinetOrchestrator()
+    # In a real environment, you'd start the background loop here
+    # return cabinet.start_autonomous_loop() 
+    return cabinet
