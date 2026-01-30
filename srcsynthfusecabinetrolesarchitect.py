@@ -1,0 +1,1 @@
+class Architect: pass

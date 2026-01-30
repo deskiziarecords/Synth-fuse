@@ -25,6 +25,17 @@ src/synthfuse/alchemj/plugins/sql.py
 src/synthfuse/alchemj/plugins/swarm.py
 src/synthfuse/alchemj/plugins/util.py
 src/synthfuse/cabinet/cabinet_orchestrator.py
+src/synthfuse/cabinet/roles/__init__.py
+src/synthfuse/cabinet/roles/architect.py
+src/synthfuse/cabinet/roles/body.py
+src/synthfuse/cabinet/roles/engineer.py
+src/synthfuse/cabinet/roles/jury.py
+src/synthfuse/cabinet/roles/librarian.py
+src/synthfuse/cabinet/roles/physician.py
+src/synthfuse/cabinet/roles/shield.py
+src/synthfuse/ingest/__init__.py
+src/synthfuse/ingest/manager.py
+src/synthfuse/lab/app.py
 src/synthfuse/meta/__init__.py
 src/synthfuse/meta/constitution.py
 src/synthfuse/meta/diagnostic.py
@@ -95,6 +106,8 @@ src/synthfuse/recipes/retraining/qir.py
 src/synthfuse/recipes/retraining/thermo_meta.py
 src/synthfuse/security/__init__.py
 src/synthfuse/security/open-gate.py
+src/synthfuse/sigils/__init__.py
+src/synthfuse/sigils/compiler.py
 src/synthfuse/sql/bridge.py
 src/synthfuse/sql/constraint_mapper.py
 src/synthfuse/systems/__init__.py
