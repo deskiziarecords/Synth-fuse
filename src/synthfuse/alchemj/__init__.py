@@ -1,19 +1,20 @@
 # src/synthfuse/alchemj/__init__.py
 
-from .compiler import compile_to_hlo
-from .registry import GlobalRegistry
+from ..sigils.compiler import SigilCompiler
 
-# THE BRIDGE: Map 'parse_spell' to the new 'parse_sigil' 
-# This fixes the ImportError while maintaining the new naming convention.
+# Instantiate a hidden compiler to handle legacy calls
+_legacy_compiler = SigilCompiler()
 
-def parse_sigil(sigil_string):
-    """
-    The new standard for parsing topological constraints.
-    (Formerly parse_spell)
-    """
-    # Logic to break down (𝕀 ⊗ ℝ) ⊕ ℤ
-    print(f"Parsing Sigil: {sigil_string}")
-    return {"op": "weld", "constraints": sigil_string}
+def parse_spell(spell_string):
+    """Legacy wrapper for the new Sigil parser."""
+    print(f"[Legacy] Redirecting 'Spell' to 'Sigil' Logic...")
+    return _legacy_compiler.parse(spell_string)
 
-# Export for backward compatibility with the current Lab version
-parse_spell = parse_sigil
+def compile_spell(parsed_spell):
+    """Legacy wrapper for Sigil-to-HLO compilation."""
+    return _legacy_compiler.compile(parsed_spell)
+
+def execute_spell(compiled_hlo, data):
+    """Legacy wrapper for high-precision Welding."""
+    # This eventually talks to the Cabinet's Engineer
+    return "Execution Redirected to Cabinet"
