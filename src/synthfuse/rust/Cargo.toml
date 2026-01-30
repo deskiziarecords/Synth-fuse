@@ -1,12 +1,32 @@
 [package]
-name = "synthfuse_security_core"
+name = "synthfuse-security-core"
 version = "0.2.0"
 edition = "2021"
+description = "Nanosecond-speed OpenGate security backend for Synth-Fuse"
+license = "OpenGate Integrity License"
+authors = ["J. Roberto Jiménez <tijuanapaint@gmail.com>"]
+
+[lib]
+name = "synthfuse_security_core"
+crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
-# High-speed cryptographic verification for OpenGate
-ring = "0.17.7" 
-# Fast linear algebra for Lyapunov boundary checks
-ndarray = "0.15.6"
-# Python-Rust bridge
-pyo3 = { version = "0.20.0", features = ["extension-module"] }
+ring = { version = "0.17", features = ["std", "dev_urandom_fallback"] }
+ed25519-dalek = { version = "2.0", features = ["std", "rand_core"] }
+sha3 = "0.10"
+blake3 = "1.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+
+[build-dependencies]
+cbindgen = "0.25"
+
+[features]
+default = []
+benchmarks = []
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
