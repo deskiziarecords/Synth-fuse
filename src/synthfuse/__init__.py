@@ -1,12 +1,3 @@
-"""
-Synth-Fuse v0.2.0 - Unified Field Engineering
-A Deterministic Hybrid Organism Architecture
-"""
-
-__version__ = "0.2.0"
-__author__ = "J. Roberto Jiménez"
-__email__ = "tijuanapaint@gmail.com"
-__license__ = "OpenGate Integrity License"
 
 # Core exports
 from .cabinet.cabinet_orchestrator import CabinetOrchestrator
