@@ -69,46 +69,128 @@ with col2:
 with col3:
     st.metric("Thermal Load", "18%", delta="+3%")
 
-# Sigil Processing Section
+# Sigil Processing Section - NOW ACTUALLY WORKS
 st.header("🔧 Sigil Processor")
-sigil_input = st.text_input("Enter Sigil Expression", value="(I⊗Z)", 
-                           help="Example: (I⊗Z), (R⊕S), (C⊗L)")
 
-data_input = st.text_area("Input Data (JSON format)", 
-                         value='{"values": [1, 2, 3, 4, 5], "mode": "test"}',
-                         height=100)
+# Use session state from recipe editor if available
+current_sigil = st.session_state.get('current_sigil', '(I⊗Z)')
+current_data = st.session_state.get('current_data', '{"size": 4, "values": [1.0, 0.5, -0.5, -1.0]}')
 
-if st.button("⚡ Process Sigil", type="secondary"):
+col1, col2 = st.columns([1, 2])
+
+with col1:
+    sigil_input = st.text_input(
+        "Enter Sigil Expression", 
+        value=current_sigil,
+        key="sigil_field",
+        help="Examples: (I⊗Z), (H⊗H)→(CNOT), (R⊕σ), (T⊗∇)"
+    )
+    
+    data_input = st.text_area(
+        "Input Data (JSON)", 
+        value=current_data,
+        height=150,
+        help="Parameters: size, temperature, lyapunov, etc."
+    )
+
+with col2:
+    # Live preview of what will happen
+    st.caption("Operation Preview")
+    if '⊗' in sigil_input:
+        st.info("🔀 Tensor Product: Kronecker product of operators")
+    elif '⊕' in sigil_input:
+        st.info("➕ Direct Sum: Block diagonal concatenation")
+    elif '→' in sigil_input:
+        st.info("➡️  Composition: Sequential application")
+    
+    # Quick parameter presets
+    preset = st.selectbox("Quick Data Preset", 
+        ["Custom", "Qubit (4x4)", "Thermal (64x64)", "Neural (128x128)"],
+        key="data_preset"
+    )
+    if preset == "Qubit (4x4)":
+        data_input = '{"size": 4, "seed": 42}'
+    elif preset == "Thermal (64x64)":
+        data_input = '{"size": 64, "temperature": 300, "conductivity": 0.5}'
+    elif preset == "Neural (128x128)":
+        data_input = '{"size": 128, "layers": [128, 64], "dropout": 0.2}'
+
+if st.button("⚡ Execute Sigil", type="primary", use_container_width=True):
     if st.session_state.cabinet and st.session_state.status == "online":
-        with st.spinner("Processing Sigil..."):
-            try:
-                # Async processing
-                async def process():
+        try:
+            # Parse data safely
+            import json
+            input_data = json.loads(data_input) if data_input else {}
+            
+            with st.spinner("Compiling & Executing..."):
+                # Run the actual computation
+                async def run_computation():
                     return await st.session_state.cabinet.process_sigil(
                         sigil_input, 
-                        eval(data_input) if data_input else {}
+                        input_data
                     )
                 
-                result = asyncio.run(process())
-                st.success("Sigil processed successfully!")
+                result = asyncio.run(run_computation())
+            
+            # Display results in cool columns
+            st.success("✨ Sigil Compiled Successfully")
+            
+            res_col1, res_col2, res_col3, res_col4 = st.columns(4)
+            res_col1.metric("Entropy", f"{result['entropy']:.4f}", 
+                          delta=f"{result['entropy']-0.1:.2f}")
+            res_col2.metric("Thermal Load", f"{result['thermal_load']:.1%}",
+                          delta=f"{(1-result['thermal_load'])*100:.0f}%", delta_color="inverse")
+            res_col3.metric("Consensus", "✓ STABLE" if result['consensus_reached'] else "✗ UNSTABLE",
+                          delta="Converged" if result['consensus_reached'] else "Diverging")
+            res_col4.metric("Matrix Shape", str(result['shape']))
+            
+            # Visualization of result
+            st.subheader("📊 Result Matrix Visualization")
+            
+            viz_tab1, viz_tab2 = st.tabs(["Heatmap", "Eigenvalues"])
+            
+            with viz_tab1:
+                result_array = np.array(result['result'])
+                if len(result_array.shape) == 2:
+                    fig, ax = plt.subplots(figsize=(6, 5))
+                    im = ax.imshow(result_array, cmap='viridis', aspect='auto')
+                    ax.set_title(f"Operator Matrix: {sigil_input}")
+                    plt.colorbar(im, ax=ax)
+                    st.pyplot(fig)
+                else:
+                    st.line_chart(result_array.flatten()[:100])
+            
+            with viz_tab2:
+                if len(result_array.shape) == 2 and result_array.shape[0] == result_array.shape[1]:
+                    eigenvals = np.linalg.eigvals(result_array)
+                    fig, ax = plt.subplots()
+                    ax.scatter(eigenvals.real, eigenvals.imag, alpha=0.6)
+                    ax.axhline(y=0, color='k', linestyle='--', alpha=0.3)
+                    ax.axvline(x=0, color='k', linestyle='--', alpha=0.3)
+                    ax.set_xlabel("Real")
+                    ax.set_ylabel("Imaginary")
+                    ax.set_title("Eigenvalue Spectrum")
+                    ax.grid(True, alpha=0.3)
+                    st.pyplot(fig)
+            
+            # Raw data expander
+            with st.expander("🔍 Raw Computation Output"):
+                st.json({
+                    'sigil': result['sigil'],
+                    'entropy': result['entropy'],
+                    'thermal_load': result['thermal_load'],
+                    'result_sample': str(result['result'])[:200] + "...",
+                    'iteration': result['iteration']
+                })
                 
-                # Display results
-                with st.expander("📋 Results Details"):
-                    st.json(result)
-                
-                # Visualize
-                st.subheader("📈 Processing Metrics")
-                cols = st.columns(4)
-                cols[0].metric("Entropy", f"{result.get('entropy', 0):.3f}")
-                cols[1].metric("Thermal", f"{result.get('thermal_load', 0):.1%}")
-                cols[2].metric("Consensus", "✓" if result.get('consensus_reached') else "✗")
-                cols[3].metric("Sigil", sigil_input)
-                
-            except Exception as e:
-                st.error(f"Processing failed: {e}")
+        except Exception as e:
+            st.error(f"🚨 Computation Failed: {str(e)}")
+            st.exception(e)
     else:
-        st.warning("Please initialize the Cabinet first")
+        st.error("⚠️ Initialize the Cabinet first! (Sidebar → Initialize)")
 
+# Add matplotlib import at top
+import matplotlib.pyplot as plt
 # System Logs
 st.header("📜 System Logs")
 log_container = st.container(height=200)
