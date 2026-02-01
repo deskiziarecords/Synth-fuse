@@ -56,6 +56,56 @@ with st.sidebar:
     st.code(f"Status: {st.session_state.status}")
     st.code("Version: 0.2.0")
     st.code("Python: " + sys.version.split()[0])
+    
+    # Sidebar additions
+with st.sidebar:
+    st.divider()
+    st.header("🧪 Recipe Loader")
+    
+    recipes = {
+        "Custom": {"sigil": "", "data": {}},
+        "Quantum Bell": {
+            "sigil": "(H⊗H)→(CNOT)",
+            "data": {"qubits": 2, "state": "entangled", "basis": "computational"},
+            "desc": "Standard Bell state preparation"
+        },
+        "Thermal Dissipation": {
+            "sigil": "(T⊗∇)→(κ)",
+            "data": {"temperature": 300, "conductivity": 0.5, "nodes": 64},
+            "desc": "Heat equation solver"
+        },
+        "Neural Manifold": {
+            "sigil": "(R⊗σ)→(W⊕b)",
+            "data": {"layers": [128, 64, 10], "activation": "relu", "dropout": 0.2},
+            "desc": "MLP forward pass topology"
+        },
+        "Chaos Control": {
+            "sigil": "(C⊗L)→(λ)",
+            "data": {"lyapunov": 0.8, "attractor": "lorenz", "dt": 0.01},
+            "desc": "Stabilized strange attractor"
+        },
+        "Signal Decomposition": {
+            "sigil": "(F⊗W)→(ψ)",
+            "data": {"signal": [0.1, 0.3, -0.2, 0.8], "wavelets": "db4", "levels": 3},
+            "desc": "Wavelet packet analysis"
+        }
+    }
+    
+    selected_recipe = st.selectbox(
+        "Select Recipe", 
+        list(recipes.keys()),
+        help="Load predefined sigil configurations"
+    )
+    
+    if selected_recipe != "Custom":
+        st.caption(f"*{recipes[selected_recipe]['desc']}*")
+    
+    if st.button("📥 Load Recipe", use_container_width=True):
+        if selected_recipe != "Custom":
+            st.session_state.current_sigil = recipes[selected_recipe]["sigil"]
+            st.session_state.current_data = str(recipes[selected_recipe]["data"]).replace("'", '"')
+            st.success(f"Loaded {selected_recipe}")
+            st.rerun()
 
 # Main dashboard
 col1, col2, col3 = st.columns(3)
