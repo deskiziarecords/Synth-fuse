@@ -30,18 +30,29 @@ class STCLState:
 
 
 # ------------------------------------------------------------------
-# 2.  Semantic field  Λ(z)  (stub: cosine distance to anchor)
+# 2.  Semantic field  Λ(z)  (Λ = I_concept - I_surface)
 # ------------------------------------------------------------------
 def semantic_field(z: PyTree, anchor: PyTree) -> float:
     """
-    Λ(z) = 1 - cos(z, anchor)   (higher → more concept info)
+    Λ(ℓ) = I_concept(ℓ) - I_surface(ℓ)
+    I_concept: invariant meaning (cosine similarity to semantic anchor)
+    I_surface: representational redundancy (entropy of representation)
     """
     flat_z, _ = jax.flatten_util.ravel_pytree(z)
     flat_a, _ = jax.flatten_util.ravel_pytree(anchor)
-    cos = jnp.dot(flat_z, flat_a) / (
+
+    # I_concept: 1.0 = identical to anchor
+    i_concept = jnp.dot(flat_z, flat_a) / (
         jnp.linalg.norm(flat_z) * jnp.linalg.norm(flat_a) + 1e-8
     )
-    return 1.0 - cos
+
+    # I_surface: entropy of the vector (proxy for representational redundancy)
+    # Lower entropy -> higher redundancy -> higher I_surface
+    probs = jax.nn.softmax(flat_z)
+    entropy = -jnp.sum(probs * jnp.log(probs + 1e-8))
+    i_surface = 1.0 / (entropy + 1.0)
+
+    return jnp.array(i_concept - i_surface)
 
 
 # ------------------------------------------------------------------
@@ -78,18 +89,41 @@ def thermodynamic_cool(z: PyTree, cool_rate: float = 0.99) -> PyTree:
 def free_energy_grad(z: PyTree, anchor: PyTree, beta: float, quant: float) -> PyTree:
     """
     ∇_z ℱ = ∇_z Λ - β ∇_z C
+    Minimising ℱ(ℓ) = Λ(ℓ) - β·C(ℓ)
+    Compression is free-energy minimisation.
     """
-    # ∇Λ
-    grad_lambda = jax.grad(lambda z: semantic_field(z, anchor))(z)
-    # ∇C  (finite-diff)
+    # ∇Λ (We want to MAXIMISE Λ, but the goal is to MINIMISE free energy ℱ = Λ - βC ?)
+    # Re-reading: "Computation is defined as: St+1 = argmin (F = E_semantic + λ C_topology)"
+    # Prompt says: "min ℱ(ℓ) = Λ(ℓ) - β·C(ℓ)"
+    # Wait, in the prompt: "Λ(ℓ) = I_concept - I_surface".
+    # Usually we want to maximise info.
+    # Prompt Page 7: "min Eℓ∼S [f~(ℓ) - αΛ(ℓ) + βC(ℓ)]"
+    # Prompt Page 6: "F(ℓ) = Λ(ℓ) - β·C(ℓ)"  ... and "Compression is free-energy minimization."
+    # If we want to MINIMIZE F, and compression cost C is positive, -βC helps if C is large? No.
+    # Usually F = E - TS. If E is energy (to be min) and S is entropy (to be max).
+    # Let's follow "min [f~ - αΛ + βC]" from page 7.
+
+    # We'll treat Λ as something we want to MAXIMISE (negative in objective).
+    # Objective: -Λ + βC
+
+    # ∇(-Λ)
+    grad_neg_lambda = jax.grad(lambda z_val: -semantic_field(z_val, anchor))(z)
+
+    # ∇C (finite-diff)
     eps = 1e-4
+    def calc_c(z_val):
+        return compression_cost(z_val, quant)
+
+    grad_c = jax.grad(lambda z_val: calc_c(z_val))(z) # Using jax.grad if C was differentiable, but it's not.
+    # Using finite diff for C
     grad_c = jax.tree.map(
-        lambda a: (compression_cost(tree_map(lambda v: v + eps, z), quant) -
-                   compression_cost(tree_map(lambda v: v - eps, z), quant)) / (2 * eps),
-        z,
+        lambda a: (calc_c(jax.tree.map(lambda v: v + eps, z)) -
+                   calc_c(jax.tree.map(lambda v: v - eps, z))) / (2 * eps),
+        z
     )
-    # combine
-    return jax.tree.map(lambda gl, gc: gl - beta * gc, grad_lambda, grad_c)
+
+    # combine: ∇ℱ = -∇Λ + β∇C
+    return jax.tree.map(lambda gnl, gc: gnl + beta * gc, grad_neg_lambda, grad_c)
 
 
 # ------------------------------------------------------------------
