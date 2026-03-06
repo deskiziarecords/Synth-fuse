@@ -2,12 +2,10 @@
 import jax
 import jax.numpy as jnp
 from jax import jit, grad, vmap
-from jax.experimental import optimizers
+from jax.example_libraries import optimizers
 import flax.linen as nn
 from typing import Callable, Tuple, Dict
 from dataclasses import dataclass
-from synthfuse.solvers.rgf_f import MatrixGreenFunction, SpatiotemporalGraph
-from synthfuse.rl.ppo_graph import PPOGraphOptimizer
 
 @dataclass
 class RGFTemporalState:

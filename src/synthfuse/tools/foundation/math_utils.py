@@ -19,10 +19,26 @@ def clip_gradients(grads, max_norm):
     gnorm = jnp.linalg.norm(grads)
     return jax.lax.cond(gnorm > max_norm, lambda: grads * (max_norm / gnorm), lambda: grads)
 
-def zeta_transform(x):
-    # Placeholder for zeta transform
-    return x
+def zeta_transform(f):
+    """
+    Fast Zeta Transform: O(n 2^n).
+    Computes sum over all subsets for each mask.
+    """
+    f_hat = f.copy()
+    n = int(jnp.log2(f.shape[0]))
+    for i in range(n):
+        mask = jnp.arange(f_hat.shape[0]) & (1 << i)
+        f_hat = jnp.where(mask > 0,
+                         f_hat + f_hat[jnp.arange(f_hat.shape[0]) ^ (1 << i)],
+                         f_hat)
+    return f_hat
 
-def weierstrass_transform(x, s=1.0):
-    # Placeholder for weierstrass transform (Gaussian convolution)
-    return x
+def weierstrass_transform(f, X, sigma, num_samples, key):
+    """
+    Gaussian smoothing via Weierstrass transform.
+    f_tilde(X) = E_{Y~N(X, sigma^2 I)}[f(Y)]
+    """
+    noise = jax.random.normal(key, (num_samples,) + X.shape) * sigma
+    Y_samples = X + noise
+    f_values = jax.vmap(f)(Y_samples)
+    return jnp.mean(f_values)
