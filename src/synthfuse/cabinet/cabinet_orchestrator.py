@@ -42,7 +42,7 @@ except ImportError:
             super().__init__("🔧 Engineer", "🔧")
         
         async def compile(self, sigil):
-            return {"sigil": sigil, "jax_code": f"# Compiled: {sigil}"}
+            return {"sigil": sigil, "jax_code": f"# Compiled: {sigil}", "proof_trace": ["init", "solve"]}
     
     class Librarian(RoleBase):
         def __init__(self):
@@ -126,6 +126,7 @@ class CabinetOrchestrator:
             "shield": Shield(),
             "body": Body(),
             "jury": Jury(),
+            "zeta_shield": Physician(), # Placeholder for elixir_3
         }
         
         # State

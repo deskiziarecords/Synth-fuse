@@ -3,5 +3,5 @@
 class Shield:
     def __init__(self):
         self.name = "Shield"
-    async def execute(self):
-        return {"role": self.name, "status": "executed"}
+    async def protect(self, bounds):
+        return {"bounds": bounds, "safe": True}

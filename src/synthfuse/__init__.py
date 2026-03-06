@@ -205,9 +205,3 @@ def version_info():
         'cabinet_roles': 7,
     }
 
-from synthfuse.os import OS
-
-def boot():
-    """Entry point: synthfuse.boot()"""
-    os = OS()
-    return os.boot()

@@ -6,8 +6,14 @@ Zeta-aware Meta-Alchemist: Optimizes spell parameters to stabilize poles in the 
 import jax
 import jax.numpy as jnp
 from typing import NamedTuple, Dict, Any
+from synthfuse.alchemj.registry import register
 from synthfuse.meta.constitution import Constitution
-from synthfuse.recipes import parse_spell, get_step
+from synthfuse.alchemj import parse_spell
+
+class ZetaAlchemist:
+    """Legacy wrapper for ZetaAlchemist."""
+    def project_to_zeta(self, file_path):
+        return jnp.zeros((10, 10)) # Placeholder
 
 class ZetaAlchemistState(NamedTuple):
     current_spell: str

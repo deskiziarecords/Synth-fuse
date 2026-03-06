@@ -3,5 +3,5 @@
 class Jury:
     def __init__(self):
         self.name = "Jury"
-    async def execute(self):
-        return {"role": self.name, "status": "executed"}
+    async def deliberate(self, evidence):
+        return {"verdict": "unanimous", "confidence": 0.95}

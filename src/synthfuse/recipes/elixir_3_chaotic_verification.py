@@ -92,9 +92,9 @@ class ChaoticVerificationEngine:
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         # Version lock
         import synthfuse
-        if not synthfuse.__version__.startswith("0.2.0"):
+        if not (synthfuse.__version__.startswith("0.2.0") or synthfuse.__version__.startswith("0.4.0")):
             raise RuntimeError(
-                f"Elixir 3 requires v0.2.0-unified-field, "
+                f"Elixir 3 requires v0.2.0-unified-field or v0.4.0, "
                 f"found {synthfuse.__version__}"
             )
         
@@ -141,7 +141,8 @@ class ChaoticVerificationEngine:
         """
         if isinstance(cnf, str):
             # Detect Sudoku vs DIMACS
-            if len(cnf.replace('.', '').replace('0', '')) == 81:
+            clean_cnf = cnf.replace('.', '').replace('0', '')
+            if len(cnf) == 81 and (not clean_cnf or clean_cnf.isdigit()):
                 # 9x9 Sudoku string
                 return self._sudoku_to_cnf(cnf)
             else:
@@ -259,17 +260,17 @@ class ChaoticVerificationEngine:
     
     async def verify(
         self,
-        <USER_PROVIDED_CNF>,           # String or CNF structure
-        <USER_PROVIDED_PROBLEM_TYPE>='auto',  # 'sudoku', 'sat', 'auto'
-        <USER_PROVIDED_NEURAL_GUIDANCE>=None  # Optional: override config
+        cnf,           # String or CNF structure
+        problem_type='auto',  # 'sudoku', 'sat', 'auto'
+        neural_guidance=None  # Optional: override config
     ) -> ProofCertificate:
         """
         Verify (solve) the given CNF problem.
         
         Args:
-            <USER_PROVIDED_CNF>: DIMACS string, Sudoku puzzle, or CNF list
-            <USER_PROVIDED_PROBLEM_TYPE>: 'sudoku', 'sat', or 'auto'-detect
-            <USER_PROVIDED_NEURAL_GUIDANCE>: Override neural guidance setting
+            cnf: DIMACS string, Sudoku puzzle, or CNF list
+            problem_type: 'sudoku', 'sat', or 'auto'-detect
+            neural_guidance: Override neural guidance setting
         
         Returns:
             ProofCertificate with solution or proof of unsatisfiability
@@ -278,7 +279,7 @@ class ChaoticVerificationEngine:
             raise RuntimeError("Elixir 3 not initialized. Call initialize() first.")
         
         # Validate input schema
-        cnf_data = self._validate_cnf(<USER_PROVIDED_CNF>)
+        cnf_data = self._validate_cnf(cnf)
         
         # Log verification attempt
         theorem_hash = hashlib.sha256(
@@ -305,7 +306,7 @@ class ChaoticVerificationEngine:
             'num_vars': cnf_data['num_vars'],
             
             # L: Logic component (AquaForte + neural)
-            'neural_guidance': <USER_PROVIDED_NEURAL_GUIDANCE> or self.config['neural_guidance'],
+            'neural_guidance': neural_guidance or self.config['neural_guidance'],
             'aqua_forte_backend': 'force_zeta_sat',
             
             # C: Chaos component (ISO-VNS)
@@ -421,8 +422,8 @@ class ChaoticVerificationEngine:
         Returns: (solved, solution_string)
         """
         cert = await self.verify(
-            <USER_PROVIDED_CNF>=puzzle,
-            <USER_PROVIDED_PROBLEM_TYPE>='sudoku'
+            cnf=puzzle,
+            problem_type='sudoku'
         )
         
         # Extract solution from proof steps

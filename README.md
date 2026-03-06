@@ -1,7 +1,7 @@
 Synth-Fuse
 Thermal rescue operations for computational infrastructures suffering from existence failure.\
 While the vendor-consultant complex is still drafting their 400-line YAML suicide notes, we've already purged the heat death and evaporated into the intake manifold.
-v0.2.0 – Unified Field\
+v0.4.0 – Unified Field\
 v0.3.0 Adiabatic Mode: Zero heat signatures, maximum pressure
 The Failure Modes You’ve Normalized
 

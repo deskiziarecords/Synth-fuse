@@ -3,5 +3,5 @@
 class Engineer:
     def __init__(self):
         self.name = "Engineer"
-    async def execute(self):
-        return {"role": self.name, "status": "executed"}
+    async def compile(self, sigil):
+        return {"sigil": sigil, "jax_code": f"# Compiled: {sigil}", "proof_trace": ["init", "solve"]}

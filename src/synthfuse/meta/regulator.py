@@ -90,7 +90,6 @@ def regulator_step(
         diverged=bool(diverged),
         halted=bool(halted)
     )
-    # In regulator_step()
 def compute_zeta_error(state) -> float:
     if hasattr(state, 'dominant_pole'):
         pole = state.dominant_pole
@@ -100,5 +99,3 @@ def compute_zeta_error(state) -> float:
     else:
         # Fallback: use grad norm
         return float(state.grad_norm)
-
-E_t = compute_zeta_error(state)
