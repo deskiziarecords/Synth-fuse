@@ -4,11 +4,38 @@ import jax
 import jax.numpy as jnp
 from synthfuse.alchemj.registry import register
 from synthfuse.alchemj.combinators import fuse_seq, fuse_loop
-from synthfuse.recipes import get_step, parse_spell
+from synthfuse.alchemj import parse_spell
 
 # ────────────────────────────────
 # 1. Symbolic Spell Generator (LLM-free for now)
 # ────────────────────────────────
+
+class MetaAlchemist:
+    """
+    The Strategic Architect.
+    Designs the 'Blueprint' or 'Spell' used to solve a problem.
+    """
+    def __init__(self, search_strategy="W-Orion"):
+        self.strategy = search_strategy
+
+    def design_blueprint(self, manifold_fingerprint):
+        """
+        1. ANALYZE: Study the manifold's curvature and entropy.
+        2. BLUEPRINT: Select the functional primitives from the sigil space.
+        3. FUSE: Create the symbolic 'Spell' string.
+        """
+        # Search strategy: 'W-Orion' Search (Weight-Optimized Radial Induction)
+        # Finds the shortest functional path between 'Problem' and 'Resolution'
+        blueprint = self._orion_search(manifold_fingerprint)
+
+        return blueprint
+
+    def _orion_search(self, fingerprint):
+        # The Architect's core optimization logic
+        # For demo: simply returns a stable pattern based on entropy
+        if fingerprint.get('entropy', 0) > 0.5:
+            return "(R ⊕ S) → (I ⊗ Z)"  # Complexity handling
+        return "(I ⊗ Z)"  # Efficient path
 
 class SpellProposal(NamedTuple):
     spell_str: str          # e.g., "(I ⊗ L)"
@@ -30,7 +57,7 @@ def propose_spell(problem_fingerprint: jax.Array) -> SpellProposal:
         return SpellProposal("(I ⊗ R)", tier=1, stability_score=0.85)
 
 # ────────────────────────────────
-2. Self-Repair Engine
+# 2. Self-Repair Engine
 # ────────────────────────────────
 
 def repair_spell(spell_str: str, diagnostics: dict) -> str:
@@ -49,7 +76,7 @@ def repair_spell(spell_str: str, diagnostics: dict) -> str:
         return spell_str  # no repair needed
 
 # ────────────────────────────────
-3. Meta-Alchemist State
+# 3. Meta-Alchemist State
 # ────────────────────────────────
 
 class MetaAlchemistState(NamedTuple):
@@ -61,7 +88,7 @@ class MetaAlchemistState(NamedTuple):
     registry: dict      # local symbol table: name → spell_str
 
 # ────────────────────────────────
-4. The 𝓜𝓐 Primitive (Meta-Alchemist)
+# 4. The 𝓜𝓐 Primitive (Meta-Alchemist)
 # ────────────────────────────────
 
 @register("𝓜𝓐")

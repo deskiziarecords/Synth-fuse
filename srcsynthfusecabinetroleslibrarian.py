@@ -1,1 +1,0 @@
-class Librarian: pass

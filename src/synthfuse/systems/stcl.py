@@ -11,7 +11,7 @@ Loop self-stabilises by alternating:
 import jax
 import jax.numpy as jnp
 import chex
-from typing import Any
+from typing import Any, Callable
 from synthfuse.alchemj import compile_spell
 
 PyTree = Any
@@ -141,3 +141,10 @@ def make_stcl(anchor: PyTree, z_init: PyTree, temp: float = 1.0) -> tuple[Callab
         clock=0,
     )
     return stcl_step, init_state
+
+class SemanticThermodynamicLoop:
+    """Legacy wrapper for STCL."""
+    def __init__(self, beta=1.0):
+        self.beta = beta
+    def step(self, z, anchor):
+        return stcl_step(None, STCLState(z, 0, 0, self.beta, 0), {"anchor": anchor})

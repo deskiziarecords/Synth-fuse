@@ -1,1 +1,0 @@
-class Body: pass

@@ -3,5 +3,5 @@
 class Librarian:
     def __init__(self):
         self.name = "Librarian"
-    async def execute(self):
-        return {"role": self.name, "status": "executed"}
+    async def ingest(self, data):
+        return {"items": len(str(data)), "hash": "abc123"}

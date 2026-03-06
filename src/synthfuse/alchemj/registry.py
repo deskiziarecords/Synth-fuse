@@ -19,8 +19,9 @@ _REGISTRY: Dict[str, StepFn] = {}
 # ----- public decorator -------------------------------------------------------
 def register(symbol: str):
     """@register('𝕀') def iso_step(key,x,p): ..."""
-    if len(symbol) != 1:
-        raise ValueError("Symbol must be single Unicode code-point")
+    # Relax to allow multi-codepoint symbols (e.g. 𝓜𝓐)
+    if not symbol:
+        raise ValueError("Symbol cannot be empty")
     def decorator(fn: StepFn):
         _REGISTRY[symbol] = fn
         return fn
@@ -33,6 +34,9 @@ def get(symbol: str) -> StepFn:
         raise KeyError(f"Symbol {symbol} not registered")
     return _REGISTRY[symbol]
 
+class GlobalRegistry:
+    def resolve_best_fit(self, spell, context):
+        return {}
 
 # ----- built-ins (loaded automatically) ---------------------------------------
 @register("𝕀")
