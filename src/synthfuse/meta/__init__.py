@@ -2,7 +2,7 @@ from .meta_alchemist import MetaAlchemist
 from .engineer_alchemist import EngineerAlchemist
 from .zeta_alchemist import ZetaAlchemist
 from .diagnostic import DiagnosticAlchemist
-from .regulator import RegulatorState, regulator_step
+from .regulator import RegulatorState, regulator_step, Regulator
 
 # The Cabinet Initialization
 # This binds the Specialists into a singular 'Council'

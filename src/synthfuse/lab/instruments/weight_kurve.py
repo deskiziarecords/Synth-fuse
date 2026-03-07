@@ -9,8 +9,8 @@ Detects: oscillations (periodicity), transits (OOD), drift (thermal stress).
 
 import jax
 import jax.numpy as jnp
-from typing import Optional, Tuple, List
-from dataclasses import dataclass
+from typing import Optional, Tuple, List, Dict, Any
+from dataclasses import dataclass, asdict
 
 from synthfuse.lab.instruments.base import LabInstrument
 
@@ -23,6 +23,21 @@ class KurveSignature:
     drift_rate: float  # Low-frequency trend magnitude
     thermal_stress: float  # Derived: high drift + high freq = stress
     lyapunov_estimate: float  # Chaos indicator from spectrum
+
+@dataclass
+class KurveAlert:
+    """Thermal alert generated from Kurve analysis."""
+    instrument: str
+    layer: str
+    thermal_stress: float
+    lyapunov_estimate: float
+    transit_count: int
+    recommendation: str
+    sigil: str
+    severity: str = "WARNING"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
 
 
 class WeightKurve(LabInstrument):
@@ -238,7 +253,7 @@ class WeightKurve(LabInstrument):
         
         return signature
     
-    def to_thermo_alert(self, threshold_stress: float = 0.5) -> Optional[dict]:
+    def to_thermo_alert(self, threshold_stress: float = 0.5) -> Optional[KurveAlert]:
         """
         Convert analysis to Thermo realm alert if stress exceeds bounds.
         
@@ -247,15 +262,20 @@ class WeightKurve(LabInstrument):
         sig = self.analyze()
         
         if sig.thermal_stress > threshold_stress:
-            return {
-                'instrument': self.INSTRUMENT_ID,
-                'layer': self.label,
-                'thermal_stress': sig.thermal_stress,
-                'lyapunov': sig.lyapunov_estimate,
-                'transit_count': int(jnp.sum(sig.transits)),
-                'recommendation': 'REDUCE_LR' if sig.periodicity else 'CHECK_DATA',
-                'sigil': '(Z⊙S)'  # Observation of Swarm
-            }
+            severity = "WARNING"
+            if sig.thermal_stress > 0.7:
+                severity = "CRITICAL"
+
+            return KurveAlert(
+                instrument=self.INSTRUMENT_ID,
+                layer=self.label,
+                thermal_stress=sig.thermal_stress,
+                lyapunov_estimate=sig.lyapunov_estimate,
+                transit_count=int(jnp.sum(sig.transits)),
+                recommendation='REDUCE_LR' if sig.periodicity else 'CHECK_DATA',
+                sigil='(Z⊙S)',
+                severity=severity
+            )
         
         return None
 
@@ -271,24 +291,26 @@ class WeightKurveThermoSensor:
     Deployed by Neural Substrate when layer thermal_load > 0.6.
     """
     
-    def __init__(self, layer_id: str, os_context):
+    def __init__(self, layer_id: str, os_context, window_size: int = 1000):
         self.layer_id = layer_id
         self.context = os_context
+        self.window_size = window_size
         self.history = []
         self.kurve = None
         
-    def sample(self, weights: jnp.ndarray):
+    def sample(self, weights: jnp.ndarray) -> Optional[KurveAlert]:
         """
         Periodic sample from training loop.
         """
-        self.history.append(weights)
+        if weights is not None:
+            self.history.append(weights)
         
         # Maintain rolling window
-        if len(self.history) > 1000:
-            self.history = self.history[-1000:]
+        if len(self.history) > self.window_size:
+            self.history = self.history[-self.window_size:]
         
         # Analyze every 100 steps
-        if len(self.history) % 100 == 0:
+        if len(self.history) > 0 and len(self.history) % 100 == 0:
             buffer = jnp.concatenate([w.flatten()[:100] for w in self.history[-10:]])
             self.kurve = WeightKurve.from_substrate(
                 self.layer_id, 
@@ -299,7 +321,8 @@ class WeightKurveThermoSensor:
             alert = self.kurve.to_thermo_alert(threshold_stress=0.5)
             if alert:
                 # Trigger Thermo realm deliberation
-                self.context.log(f"THERMO_SENSOR: Alert from {self.layer_id}")
+                if self.context:
+                    self.context.log(f"THERMO_SENSOR: Alert from {self.layer_id}")
                 return alert
         
         return None
