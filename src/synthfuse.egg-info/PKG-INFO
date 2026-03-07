@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: synthfuse
-Version: 0.2.0
+Version: 0.4.0
 Summary: Unified Field Engineering – A Deterministic Hybrid Organism Architecture
 Home-page: https://github.com/deskiziarecords/Synth-fuse
 Author: J. Roberto Jiménez
@@ -27,6 +27,10 @@ Description-Content-Type: text/markdown
 Requires-Dist: numpy>=1.24.0
 Requires-Dist: jax>=0.4.25
 Requires-Dist: jaxlib>=0.4.25
+Requires-Dist: flax>=0.8.0
+Requires-Dist: optax>=0.1.7
+Requires-Dist: chex>=0.1.84
+Requires-Dist: lark>=1.1.8
 Requires-Dist: aiofiles>=23.0.0
 Requires-Dist: aiohttp>=3.9.0
 Requires-Dist: watchfiles>=0.20.0
@@ -67,6 +71,7 @@ Requires-Dist: python-jose[cryptography]>=3.3.0; extra == "security"
 Requires-Dist: passlib[bcrypt]>=1.7.4; extra == "security"
 Provides-Extra: all
 Requires-Dist: pytest>=7.4.0; extra == "all"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "all"
 Requires-Dist: black>=23.11.0; extra == "all"
 Requires-Dist: fastapi>=0.104.0; extra == "all"
 Requires-Dist: jupyterlab>=4.0.0; extra == "all"
@@ -79,7 +84,7 @@ Dynamic: requires-python
 Synth-Fuse
 Thermal rescue operations for computational infrastructures suffering from existence failure.\
 While the vendor-consultant complex is still drafting their 400-line YAML suicide notes, we've already purged the heat death and evaporated into the intake manifold.
-v0.2.0 – Unified Field\
+v0.4.0 – Unified Field\
 v0.3.0 Adiabatic Mode: Zero heat signatures, maximum pressure
 The Failure Modes You’ve Normalized
 

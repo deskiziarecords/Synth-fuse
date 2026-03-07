@@ -3,6 +3,8 @@ from .achiever import Achiever
 from .gatekeeper import Gatekeeper
 from .thermo_mesh import ThermoMesh
 from .stcl import SemanticThermodynamicLoop
+from .ntep import NTEP
+from .archiver import Archiver
 
 # Registering the 'Body' components
 librarian = SystemErudite()
