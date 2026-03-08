@@ -1,5 +1,5 @@
 """
-Synth-Fuse OS v0.4 - AI Model Operating System
+Synth-Fuse OS v0.3 - AI Model Operating System
 Boots existing components into Six Realms.
 """
 
