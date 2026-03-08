@@ -5,7 +5,7 @@ All obey:  StepFn(key, x, params) -> new_x
 import jax
 import jax.numpy as jnp
 import jax.random as jr
-from alchemj.registry import register
+from synthfuse.alchemj.registry import register
 
 tree_map = jax.tree.map
 
@@ -62,8 +62,8 @@ def chaos_logistic(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     return final
 
 # ------------------------------------------------------------------
-// ℤ  –  Zeta-transform (Dirichlet series, truncated)
-// ------------------------------------------------------------------
+# ℤ  –  Zeta-transform (Dirichlet series, truncated)
+# ------------------------------------------------------------------
 @register("ℤ")
 def zeta_transform(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """
@@ -78,8 +78,8 @@ def zeta_transform(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     return jnp.tensordot(x[..., :max_terms], coeffs, axes=1)
 
 # ------------------------------------------------------------------
-// Δ  –  Delta compression (residual + quantise)
-// ------------------------------------------------------------------
+# Δ  –  Delta compression (residual + quantise)
+# ------------------------------------------------------------------
 @register("Δ")
 def delta_compress(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """
@@ -98,8 +98,8 @@ def delta_compress(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
         return tree_map(lambda z: jnp.abs(z), q)
 
 # ------------------------------------------------------------------
-// ℛ  –  Random spherical perturbation (unit-norm)
-// ------------------------------------------------------------------
+# ℛ  –  Random spherical perturbation (unit-norm)
+# ------------------------------------------------------------------
 @register("ℛ")
 def spherical_noise(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """
