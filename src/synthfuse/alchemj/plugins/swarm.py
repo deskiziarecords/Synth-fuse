@@ -1,8 +1,8 @@
 import jax
 import jax.numpy as jnp
-from alchemj.registry import alchemj
+from synthfuse.alchemj.registry import register
 
-@alchemj.register("𝕀")
+@register("𝕀")
 def iso_step(key, state, params, fitness_fn):
     """
     𝕀 (ISO): Intelligent Swarm Optimization Step.
@@ -32,7 +32,7 @@ def iso_step(key, state, params, fitness_fn):
         best_fitness=best_fitness
     )
 
-@alchemj.register("𝕊")
+@register("𝕊")
 def mrbmo_siege_step(key, state, params, fitness_fn):
     """
     𝕊 (Siege): Modified Red-Back Spider Optimization.

@@ -1,4 +1,7 @@
 
+import jax
+from synthfuse.alchemj.registry import register
+
 @register("ℤ𝕊")
 def switchksat_step(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """Switch-k SAT solver step – returns satisfiability mask."""

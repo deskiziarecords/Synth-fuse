@@ -1,5 +1,9 @@
 # alchemj/plugins/sql.py
-@alchemj.register("𝕊𝕈𝕃")
+import jax
+from synthfuse.alchemj.registry import register
+PyTree = jax.Array # placeholder
+
+@register("𝕊𝕈𝕃")
 def sql_parser_operator(key: jax.Array, state: PyTree, params: PyTree) -> PyTree:
     """
     Parse SQL query and transform into vector operations.
