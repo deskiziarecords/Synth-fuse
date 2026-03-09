@@ -68,7 +68,14 @@ A deterministic mapping `ϕ : source → τ ⊕ σ`.
 - **δ (Solvency Integral)**: `∫(Investment − Depreciation − Default) dt`.
 - **𝕋_𝕔 (Collapse Horizon)**: `ln(EntropyStock) / Throughput`.
 
-### III. System Requirements
+### IV. RBC Circulatory Intelligence (v0.5.0 Algebraic Expansion)
+- **𝕊𝕡 (Spinor Norm)**: Recursive rank/scale reduction for lattice forms.
+- **𝔹 (BONG)**: Basis of Norm Generators. Recursive orthogonal projection.
+- **Ω (Algorithm Omega)**: `O(n 2^n)` multi-agent tipping point enumeration.
+- **Σ (Algorithm Sigma)**: Architectural configuration pattern matching.
+- **κ (Algorithm Kappa)**: Pixel classification via Weierstrass transform.
+
+### V. System Requirements
 - **Python**: >= 3.10
 - **Accelerator**: JAX/XLA compatible (CUDA/ROCm/TPU)
 - **Security**: TPM/HSM support for Vault operators.

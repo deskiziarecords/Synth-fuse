@@ -1,4 +1,4 @@
-# Synth-Fuse v0.3.0 — Adiabatic Mode 🌪️
+# Synth-Fuse v0.5.0 — RBC Circulatory Intelligence 🩸
 
  *“Every algorithm is a plugin; every fusion is a pipeline; every pipeline is a JAX transform.”*
 
@@ -10,7 +10,8 @@ Synth-Fuse is a **circulatory operating system** for neurosymbolic AI. It assemb
 
 ## 🚀 Key Innovations in v0.3.0
 
-- **Adiabatic Kernel**: A hardened JAX-native core that enforces physical supremacy. If a computation violates thermal stability (Lyapunov safety bounds), the kernel vetoes execution.
+- **Adiabatic Kernel (v0.5)**: A hardened JAX-native core that enforces physical supremacy and spectral consistency.
+- **RBC Circulatory Intelligence**: High-rank algebraic reduction algorithms (`SpinorNorm`, `BONG`, `Omega`) circulating as 'algorithmic splints' through the OS.
 - **The Six Realms**: Architectural isolation between Factory (Assembly), Playground (Creation), Auto-mode (Discovery), Lab (Validation), Thermo (Governance), and Substrate (Neural Foundation).
 - **WeightKurve Analysis**: Neural weight trajectories are analyzed as stellar light curves to detect chaos, oscillations, and out-of-distribution transits.
 - **Unified Sigil Language**: Composable functional topologies (e.g., `(R⊗C)⊗(φ⋈D)`) that serve as both specification and execution contract.

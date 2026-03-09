@@ -545,7 +545,7 @@ class SynthFuseOS:
         )
 
         return {
-            "version": "0.3.0-adiabatic",
+            "version": "0.5.0-rbc",
             "session_id": self._context.session_id,
             "operator": self._context.operator,
             "status": "OPERATIONAL",
@@ -609,7 +609,7 @@ class SynthFuseOS:
     def _status(self) -> Dict[str, Any]:
         """Current OS status."""
         return {
-            "version": "0.3.0-adiabatic",
+            "version": "0.5.0-rbc",
             "session_id": self._context.session_id if self._context else None,
             "booted": self._booted,
             "shutdown": self._shutdown,

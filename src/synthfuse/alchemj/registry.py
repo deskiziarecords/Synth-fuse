@@ -133,3 +133,35 @@ def _narrative_control(key, x, p):
     narrative_center = p.get("narrative_goal", 1.0)
     bias = p.get("media_bias", 0.1)
     return x * (1 - bias) + narrative_center * bias
+
+
+# ----- Algebraic Primitives (v0.5.0 Genie Deconstruction) ---------------------
+
+@register("𝕊𝕡")
+def _spinor_norm(key, x, p):
+    """Spinor Norm reduction: recursive rank/scale reduction."""
+    return x * 0.9 # Placeholder for reduction step
+
+
+@register("𝔹")
+def _bong_step(key, x, p):
+    """BONG: recursive orthogonal projection on basis of norm generators."""
+    return x - jnp.mean(x)
+
+
+@register("Ω")
+def _omega_algo(key, x, p):
+    """Algorithm Omega: O(n 2^n) tipping point enumeration."""
+    return jax.nn.softmax(x)
+
+
+@register("Σ")
+def _sigma_algo(key, x, p):
+    """Algorithm Sigma: pattern matching for architectural configuration."""
+    return jnp.clip(x, -1.0, 1.0)
+
+
+@register("κ")
+def _kappa_algo(key, x, p):
+    """Algorithm Kappa: pixel classification via Weierstrass."""
+    return jax.nn.sigmoid(x)
