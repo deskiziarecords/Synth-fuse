@@ -60,6 +60,14 @@ A deterministic mapping `ϕ : source → τ ⊕ σ`.
 - **∘ (Conditional)**: Route execution based on predicate `φ`.
 - **⋈ (Fusion)**: In-place topological join.
 
+### III. Systemic Hydraulics (v0.3.0 Economic Expansion)
+- **Δ$ (Recursive Debt)**: `x_t+1 = x_t * (1 + β)`. Mandated growth.
+- **𝕄 (Market SGD)**: `argmax V_total`. Optimization toward market value.
+- **𝕀𝕞𝕞 (Immune Trigger)**: `h(δ, Risk)`. Threshold-based systemic response (Bailouts).
+- **§ (Institutional Invariants)**: Hard-coded constraints (Fiduciary Duty).
+- **δ (Solvency Integral)**: `∫(Investment − Depreciation − Default) dt`.
+- **𝕋_𝕔 (Collapse Horizon)**: `ln(EntropyStock) / Throughput`.
+
 ### III. System Requirements
 - **Python**: >= 3.10
 - **Accelerator**: JAX/XLA compatible (CUDA/ROCm/TPU)
