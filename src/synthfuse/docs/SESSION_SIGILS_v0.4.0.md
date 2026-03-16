@@ -15,6 +15,7 @@
 | **Lab** | `(Z⊗T)⊕(B⊗F)` | Hard validation: Zero-point truth checking vs Benchmark-Formal verification |
 | **Thermo** | `((I⊗Z)⊗S)⊙(F⊕R)` | Physical governance: Identity-Grounded Swarm woven with Regulator feedback |
 | **Substrate** | `(Z⊙S)` | Neural foundation: Zero-point observation of Swarm dynamics (WeightKurve) |
+| **Economic** | `(𝕄 ⊗ Δ$) ⊕ (𝕀𝕞𝕞 ⊙ §)` | Sovereign Governance: Market SGD + Recursive Debt shielded by Immune Triggers |
 
 ---
 

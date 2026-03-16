@@ -117,8 +117,8 @@ def dqn_step(key: jax.Array, x: dict, params: dict) -> dict:
 
 
 # ------------------------------------------------------------------
-# A2C step (actor-critic with entropy bonus)
-# ------------------------------------------------------------------
+ # A2C step (actor-critic with entropy bonus)
+ # ------------------------------------------------------------------
 @register("𝔸")
 def a2c_step(key: jax.Array, x: dict, params: dict) -> dict:
     """
