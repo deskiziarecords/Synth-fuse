@@ -20,7 +20,7 @@ import subprocess
 # --------------------------------------------------------------
 
 PACKAGE_NAME = "synthfuse"
-VERSION = "0.3.0"
+VERSION = "0.5.0"
 AUTHOR = "J. Roberto Jiménez"
 AUTHOR_EMAIL = "tijuanapaint@gmail.com"
 DESCRIPTION = "Unified Field Engineering – A Deterministic Hybrid Organism Architecture"

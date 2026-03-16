@@ -4,7 +4,6 @@ All obey:  StepFn(key, x, params) -> new_x
 """
 import jax
 import jax.numpy as jnp
-import jax.random as jr
 import jax.scipy as jsp
 from synthfuse.alchemj.registry import register
 
@@ -88,8 +87,8 @@ def sparse_cholesky(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     return z
 
 # ------------------------------------------------------------------
-# ℕ𝕋𝕂 –  NTK projection (vector leaves)
-# ------------------------------------------------------------------
+ # ℕ𝕋𝕂 –  NTK projection (vector leaves)
+ # ------------------------------------------------------------------
 @register("ℕ𝕋𝕂")
 def ntk_project(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """
@@ -103,8 +102,8 @@ def ntk_project(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     return B.T @ coeffs  # back to D
 
 # ------------------------------------------------------------------
-# 𝔽 –  Fisher-Rao geodesic step
-# ------------------------------------------------------------------
+ # 𝔽 –  Fisher-Rao geodesic step
+ # ------------------------------------------------------------------
 @register("𝔽")
 def fisher_step(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """
@@ -119,40 +118,3 @@ def fisher_step(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     inv_f = 1.0 / (fisher_diag + damp)
     update = -lr * inv_f * grad
     return x + update
-
-# ------------------------------------------------------------------
-# Ι – Algorithm Iota: ℓ4-norm maximization with Bloch signal models
-# ------------------------------------------------------------------
-@register("Ι")
-def algorithm_iota(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
-    """
-    Absolute fourth power maximization for MRI quantitative mapping.
-    Bloch signal model proxy: maximizes peakiness of reconstruction.
-    """
-    # x represents reconstruction weights or signal components
-    # ℓ4-norm maximization via gradient ascent
-    lr = params.get("lr", 0.01)
-    def l4_norm(v):
-        return jnp.sum(jnp.abs(v)**4)
-
-    grad = jax.grad(l4_norm)(x)
-    return x + lr * grad
-
-# ------------------------------------------------------------------
-# ρ – Algorithm Rho: RGF Schur Complement with Triple-Color warm starts
-# ------------------------------------------------------------------
-@register("ρ")
-def algorithm_rho(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
-    """
-    Selected matrix inversion for demand forecasting.
-    RGF Schur Complement approximation.
-    """
-    # x is a covariance or interaction matrix
-    # Triple-Color warm start (mocked as a biased initialization)
-    bias = params.get("warm_start_bias", 0.1)
-    warm_x = x + bias * jr.normal(key, x.shape)
-
-    # Selected inversion (Schur Complement proxy)
-    # Using JAX's solver as a base for the Schur complement
-    # In practice, this would be a more specialized sparse RGF solver
-    return jnp.linalg.inv(warm_x + jnp.eye(x.shape[0]) * 1e-6)

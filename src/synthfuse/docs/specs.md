@@ -60,7 +60,22 @@ A deterministic mapping `ϕ : source → τ ⊕ σ`.
 - **∘ (Conditional)**: Route execution based on predicate `φ`.
 - **⋈ (Fusion)**: In-place topological join.
 
-### III. System Requirements
+### III. Systemic Hydraulics (v0.3.0 Economic Expansion)
+- **Δ$ (Recursive Debt)**: `x_t+1 = x_t * (1 + β)`. Mandated growth.
+- **𝕄 (Market SGD)**: `argmax V_total`. Optimization toward market value.
+- **𝕀𝕞𝕞 (Immune Trigger)**: `h(δ, Risk)`. Threshold-based systemic response (Bailouts).
+- **§ (Institutional Invariants)**: Hard-coded constraints (Fiduciary Duty).
+- **δ (Solvency Integral)**: `∫(Investment − Depreciation − Default) dt`.
+- **𝕋_𝕔 (Collapse Horizon)**: `ln(EntropyStock) / Throughput`.
+
+### IV. RBC Circulatory Intelligence (v0.5.0 Algebraic Expansion)
+- **𝕊𝕡 (Spinor Norm)**: Recursive rank/scale reduction for lattice forms.
+- **𝔹 (BONG)**: Basis of Norm Generators. Recursive orthogonal projection.
+- **Ω (Algorithm Omega)**: `O(n 2^n)` multi-agent tipping point enumeration.
+- **Σ (Algorithm Sigma)**: Architectural configuration pattern matching.
+- **κ (Algorithm Kappa)**: Pixel classification via Weierstrass transform.
+
+### V. System Requirements
 - **Python**: >= 3.10
 - **Accelerator**: JAX/XLA compatible (CUDA/ROCm/TPU)
 - **Security**: TPM/HSM support for Vault operators.
