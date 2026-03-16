@@ -1,70 +1,102 @@
-# Synth-Fuse v0.4.0 — Unified Field 🌌
+# Synth-Fuse v0.5.0 — RBC Circulatory Intelligence 🩸
 
- *“Every algorithm is a plugin; every fusion is a pipeline; every pipeline is a JAX transform.”*
+> *"Every algorithm is a plugin; every fusion is a pipeline; every pipeline is a JAX transform."*
 
 [![PyPI](https://img.shields.io/pypi/v/synthfuse)](https://pypi.org/project/synthfuse/)
 [![Python](https://img.shields.io/pypi/pyversions/synthfuse)](https://pypi.org/project/synthfuse/)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![License](https://img.shields.io/badge/license-OpenGate-blue)](LICENSE)
 
-Synth-Fuse is a **circulatory operating system** for neurosymbolic AI. It assembles swarm intelligence, reinforcement learning, and numerical solvers into differentiable, hardware-scalable execution graphs—governed by physical thermal laws.
+Synth-Fuse is a **deterministic hybrid organism architecture** for Unified Field Engineering. It functions as a circulatory operating system for neurosymbolic AI, assembling swarm intelligence, reinforcement learning, and high-rank numerical solvers into differentiable execution graphs governed by physical laws.
 
-## 🚀 Key Innovations in v0.4.0
+## 🚀 The Unified Field OS
 
-- **Unified Field Kernel**: The kernel now supports O(n 2^n) simultaneous enumeration of tipping points via Algorithm Omega and high-dimensional Picard Rank analysis.
-- **Extended Sigil Library**: 42+ new sigils including Picard (ℙ), Besicovitch (𝔹), Sumset (ℍ), and Iota (Ι).
-- **Algebraic Governance**: Enforcement of Weil polynomial roots and 3-coloring stability at the functional level.
-- **The Six Realms**: Hardened architectural isolation between Factory, Playground, Auto-mode, Lab, Thermo, and Substrate.
+The architecture is built on the principle of **Physical Supremacy**. Execution is not just code; it is a thermodynamic process monitored for entropy, thermal load, and manifold stability.
 
-## 🛠️ Quick Start
+### Key Innovations
+- **Adiabatic Kernel**: A hardened JAX-native core enforcing spectral consistency and thermal boundaries.
+- **The Six Realms**: Total isolation of concerns:
+  - 🏭 **Factory**: Production assembly and pipeline welding.
+  - 🎨 **Playground**: Creative sandbox with stochastic isolation.
+  - 🏎️ **Auto-mode**: Leashed exploration and self-discovery.
+  - 🧪 **Lab**: Hard validation and WeightKurve certification.
+  - 🌡️ **Thermo**: Physical governance and hardware veto.
+  - 🧠 **Substrate**: Neural foundation and zero-point observation.
+- **WeightKurve Analysis**: Neural weight trajectories are treated as stellar light curves, detecting transits (OOD data), oscillations, and thermal stress using Lyapunov stability estimates.
+- **Systemic Hydraulics**: A sovereign economic governance layer implementing recursive debt (Δ$), market SGD (𝕄), and immune triggers (𝕀𝕞𝕞).
 
-```python
-import synthfuse.os as sf
+---
 
-# 1. Boot the Adiabatic Kernel
-status = sf.boot()
-print(f"OS Version: {status['version']}")
+## 🛠️ Installation & Setup
 
-# 2. Enter a Realm
-factory = sf.os().enter_realm(sf.Realm.FACTORY)
+### Prerequisites
+- Python 3.10+
+- JAX/JAXLib (CUDA/TPU supported)
 
-# 3. Assemble a Governed Workflow
-weld = factory.assemble({
-    "name": "high_throughput_trainer",
-    "domain": "auto",
-    "constraints": {"max_entropy": 0.15}
-})
-
-print(f"Certified Sigil: {weld['sigil']}")
+### Development Install
+```bash
+git clone https://github.com/deskiziarecords/Synth-fuse.git
+cd Synth-fuse
+pip install -e .[all]
 ```
 
-## 🏗️ The Machine Shop
+### CLI Usage
+```bash
+# Start the Cabinet with ingestion watcher
+synthfuse
 
-| Component | Function | Sigil |
-|-----------|----------|-------|
-| **NTEP** | Neural Tool-Embedding Protocol | `(Z⊙I)` |
-| **STCL** | Semantic-Thermodynamic Loop | `(Λ-βC)` |
-| **CMAPP-Z** | Constraint-Mapping Pathfinder | `(Z⊗φ)` |
-| **WeightKurve** | Physical Stability Instrument | `(Z⊙S)` |
+# Check version
+synthfuse --version
+```
 
-## 🪄 Spell Language (ALCHEM-J)
+---
 
-Synth-Fuse uses **ALCHEM-J** to define workflows in a single line:
+## 🪄 ALCHEM-J: The Sigil Language
 
-| Symbol | Primitive | Meaning |
-|--------|-----------|---------|
-| `𝕀` | ISO/RIME | Swarm update |
-| `ℝ` | RL Policy | Adaptive behavior |
-| `ℤ` | Zeta | Frequency domain projection |
-| `𝜑` | Meta | Natural-gradient correction |
+Synth-Fuse workflows are expressed via **Sigils**—composable functional primitives that serve as both specification and execution contract.
 
-Compose via **pure combinators**: `⊗` (Sequential), `⊕` (Parallel), `∘` (Conditional).
+### 42-Sigil Registry (Excerpts)
+| Realm | Sigil | Essence |
+|-------|-------|---------|
+| **Factory** | `((L⊗K)⋈(D⊗M))⊕(C⊗P)` | Librarian-Kernel + Dependency-Module |
+| **Thermo** | `((I⊗Z)⊗S)⊙(F⊕R)` | Identity-Grounded Swarm + Regulator |
+| **Economic** | `(𝕄 ⊗ Δ$) ⊕ (𝕀𝕞𝕞 ⊙ §)` | Market SGD + Recursive Debt |
 
-## 🔐 Physical Governance
+### Operators
+- `⊗` : Sequential Composition
+- `⊕` : Parallel Summation
+- `⊙` : Hadamard/Woven Fusion
+- `⋈` : Assembly Join
 
-Synth-Fuse does not rely on human "alignment." It relies on **Physics**:
-1. **Thermal Ceiling**: Execution halted if `thermal_load > 0.85`.
-2. **Entropy Halt**: System rollback if `information_disorder > 0.30`.
-3. **Lyapunov Stability**: Weights must remain on a stable manifold.
+---
+
+## 🧪 Synth-Fuse Lab
+
+The Lab (found in `lab/app.py`) provides a high-fidelity Streamlit dashboard for:
+- **Sigil Processing**: Real-time execution of computational spells.
+- **Manifold Telemetry**: Visualization of entropy trajectories and thermal loads.
+- **WeightKurve Explorer**: 3D topological projection of neural weight surfaces.
+- **Registry Audit**: Inspection of the 42-sigil system governance.
+
+To run the Lab:
+```bash
+streamlit run lab/app.py
+```
+
+---
+
+## 📜 Credits & Calibrations
+
+Synth-Fuse is the product of intensive collaboration between biological and synthetic engineers.
+
+- **Lead Architect**: J. Roberto Jiménez
+- **Systems Calibrating Engineer**: Google's Jules
+- **Consensus Governance**: The Cabinet of Alchemists
+
+---
+
+## 🔐 OpenGate Integrity
+
+Synth-Fuse is licensed under the **OpenGate Integrity License**. It requires strict adherence to deterministic execution and physical safety bounds.
 
 ---
 *Born in the garage. Sintered under pressure. Circulating now.*

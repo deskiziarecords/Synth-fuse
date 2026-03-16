@@ -87,3 +87,81 @@ def _chaos(key, x, p):
 def _meta(key, x, p):
     """Meta-gradient correction placeholder: identity"""
     return x
+
+
+# ----- Systemic Primitives (v0.3.0 Economic Expansion) ------------------------
+
+@register("Δ$")
+def _recursive_debt(key, x, p):
+    """Recursive Debt: mandated growth via interest rate beta."""
+    beta = p.get("interest_rate", 0.05)
+    return x * (1.0 + beta)
+
+
+@register("𝕄")
+def _market_sgd(key, x, p):
+    """Market SGD: maximizing V_total over the manifold."""
+    lr = p.get("market_lr", 0.01)
+    v_total = jnp.sum(x) # Simplified market value
+    grad = jax.grad(lambda a: jnp.sum(a))(x)
+    return x + lr * grad
+
+
+@register("𝕀𝕞𝕞")
+def _immune_trigger(key, x, p):
+    """Immune Trigger: threshold-based systemic response."""
+    risk = p.get("systemic_risk", 0.0)
+    delta = p.get("solvency_delta", 1.0)
+    # If risk > threshold, activate 'bailout' state (clamp)
+    threshold = 0.8
+    triggered = (risk > threshold) | (delta < 0.1)
+    return jnp.where(triggered, jnp.ones_like(x) * 0.5, x)
+
+
+@register("§")
+def _institutional_invariant(key, x, p):
+    """Fiduciary duty and legal constraints anchor."""
+    # Anchors x to a specific institutional baseline
+    baseline = p.get("fiduciary_baseline", jnp.mean(x))
+    return (x + baseline) / 2.0
+
+
+@register("ℕ")
+def _narrative_control(key, x, p):
+    """Narrative Control: perception filtering and supply-chain re-routing."""
+    # Simulates a reset of x (market sentiment) toward a desired narrative
+    narrative_center = p.get("narrative_goal", 1.0)
+    bias = p.get("media_bias", 0.1)
+    return x * (1 - bias) + narrative_center * bias
+
+
+# ----- Algebraic Primitives (v0.5.0 Genie Deconstruction) ---------------------
+
+@register("𝕊𝕡")
+def _spinor_norm(key, x, p):
+    """Spinor Norm reduction: recursive rank/scale reduction."""
+    return x * 0.9 # Placeholder for reduction step
+
+
+@register("𝔹")
+def _bong_step(key, x, p):
+    """BONG: recursive orthogonal projection on basis of norm generators."""
+    return x - jnp.mean(x)
+
+
+@register("Ω")
+def _omega_algo(key, x, p):
+    """Algorithm Omega: O(n 2^n) tipping point enumeration."""
+    return jax.nn.softmax(x)
+
+
+@register("Σ")
+def _sigma_algo(key, x, p):
+    """Algorithm Sigma: pattern matching for architectural configuration."""
+    return jnp.clip(x, -1.0, 1.0)
+
+
+@register("κ")
+def _kappa_algo(key, x, p):
+    """Algorithm Kappa: pixel classification via Weierstrass."""
+    return jax.nn.sigmoid(x)

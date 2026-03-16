@@ -26,7 +26,7 @@ def levy_noise(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     # Chambers-Mallows-Stuck method (α≠1)
     def _levy(key, shape):
         w = jr.exponential(key, shape)
-        phi = jr.uniform(key, shape, minval=-jnp.pi/2, maxval=jnp.pi/2)
+        phi = jr.uniform(key, shape, minval=-jnp.pi/2 + 1e-5, maxval=jnp.pi/2 - 1e-5)
         if alpha == 1.0:
             z = jnp.tan(phi)
             eta = beta * jnp.log(jnp.abs(w)) + jnp.pi/2
@@ -35,9 +35,15 @@ def levy_noise(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
             cos_phi = jnp.cos(phi)
             z = jnp.tan(phi)
             alpha_phi = alpha * phi
-            eta = -beta * jnp.tan(jnp.pi*alpha/2) if alpha != 1 else 0.0
-            levy = ( jnp.sin(alpha_phi) / cos_phi )**(1/alpha) * \
-                   ( jnp.cos((1-alpha)*phi) / w )**((1-alpha)/alpha)
+            eta = -beta * jnp.tan(jnp.pi*alpha/2) if (alpha != 1.0) else 0.0
+
+            # Use jnp.power for stability
+            term1 = jnp.sin(alpha_phi) / cos_phi
+            term2 = jnp.cos((1.0 - alpha) * phi) / w
+
+            levy = jnp.sign(term1) * jnp.power(jnp.abs(term1), 1.0/alpha) * \
+                   jnp.power(jnp.abs(term2), (1.0 - alpha) / alpha)
+
             return loc + scale * (levy + eta)
 
     keys = jr.split(key, 10)  # cheap split
@@ -62,8 +68,8 @@ def chaos_logistic(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     return final
 
 # ------------------------------------------------------------------
-# ℤ  –  Zeta-transform (Dirichlet series, truncated)
-# ------------------------------------------------------------------
+ # ℤ  –  Zeta-transform (Dirichlet series, truncated)
+ # ------------------------------------------------------------------
 @register("ℤ")
 def zeta_transform(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """
@@ -74,12 +80,14 @@ def zeta_transform(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     max_terms = params.get("max_terms", x.shape[-1])
     k = jnp.arange(1, max_terms + 1, dtype=x.dtype)
     coeffs = 1.0 / (k ** s)  # [max_terms]
-    # contract last axis
+
+    if x.ndim == 1:
+        return jnp.dot(x[:max_terms], coeffs)
     return jnp.tensordot(x[..., :max_terms], coeffs, axes=1)
 
 # ------------------------------------------------------------------
-# Δ  –  Delta compression (residual + quantise)
-# ------------------------------------------------------------------
+ # Δ  –  Delta compression (residual + quantise)
+ # ------------------------------------------------------------------
 @register("Δ")
 def delta_compress(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """
@@ -98,8 +106,8 @@ def delta_compress(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
         return tree_map(lambda z: jnp.abs(z), q)
 
 # ------------------------------------------------------------------
-# ℛ  –  Random spherical perturbation (unit-norm)
-# ------------------------------------------------------------------
+ # ℛ  –  Random spherical perturbation (unit-norm)
+ # ------------------------------------------------------------------
 @register("ℛ")
 def spherical_noise(key: jax.Array, x: jax.Array, params: dict) -> jax.Array:
     """
