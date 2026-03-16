@@ -8,13 +8,9 @@
 
 Synth-Fuse is a **deterministic hybrid organism architecture** for Unified Field Engineering. It functions as a circulatory operating system for neurosymbolic AI, assembling swarm intelligence, reinforcement learning, and high-rank numerical solvers into differentiable execution graphs governed by physical laws.
 
-## 🚀 Key Innovations in v0.3.0
+## 🚀 The Unified Field OS
 
-- **Adiabatic Kernel (v0.5)**: A hardened JAX-native core that enforces physical supremacy and spectral consistency.
-- **RBC Circulatory Intelligence**: High-rank algebraic reduction algorithms (`SpinorNorm`, `BONG`, `Omega`) circulating as 'algorithmic splints' through the OS.
-- **The Six Realms**: Architectural isolation between Factory (Assembly), Playground (Creation), Auto-mode (Discovery), Lab (Validation), Thermo (Governance), and Substrate (Neural Foundation).
-- **WeightKurve Analysis**: Neural weight trajectories are analyzed as stellar light curves to detect chaos, oscillations, and out-of-distribution transits.
-- **Unified Sigil Language**: Composable functional topologies (e.g., `(R⊗C)⊗(φ⋈D)`) that serve as both specification and execution contract.
+The architecture is built on the principle of **Physical Supremacy**. Execution is not just code; it is a thermodynamic process monitored for entropy, thermal load, and manifold stability.
 
 ### Key Innovations
 - **Adiabatic Kernel**: A hardened JAX-native core enforcing spectral consistency and thermal boundaries.
