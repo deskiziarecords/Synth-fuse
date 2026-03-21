@@ -1,6 +1,6 @@
 # src/synthfuse/__init__.py
 
-__version__ = "0.4.0-unified-field"
+__version__ = "0.5.0-rbc"
 __author__ = "J. Roberto Jiménez"
 __email__ = "tijuanapaint@gmail.com"
 __license__ = "OpenGate Integrity License"

@@ -18,7 +18,8 @@ PyTree = Any
 class OrionState:
     embeddings: jax.Array  # [num_tools, dim]  – fixed “stars”
     temperature: float     # σ  (Weierstrass width)
-    density: jaxArray      # manifold curvature scalar field (placeholder)
+    scores: jax.Array      # [num_tools] – path scores f(t)
+    density: jax.Array     # manifold curvature scalar field (placeholder)
 
 
 # ------------------------------------------------------------------
@@ -27,19 +28,31 @@ class OrionState:
 @register("𝕎")
 def weierstrass_potential(key: jax.Array, pos: jax.Array, params: dict) -> jax.Array:
     """
-    Returns scalar potential  U(x) = Σᵢ exp( -||x - toolᵢ||² / (2σ²) )
+    Returns scalar potential  U(x) = Σᵢ exp( -||x - toolᵢ||² / (4σ) ) / sqrt(4πσ)
+    Matches the Heat-Kernel retrieval formalisation:
+    f~(x) = 1/sqrt(4πσ) ∫ f(t) exp(-||x-t||²/4σ) dt
     key   – PRNG (unused, but signature compatible)
     pos   – [batch, dim]  query points
-    params – {embeddings: [T, D], temperature: float}
+    params – {embeddings: [T, D], temperature: float, scores: [T]}
     """
     tools = params["embeddings"]
     sigma = params["temperature"]
+    scores = params.get("scores", jnp.ones(tools.shape[0]))
+
     # [batch, 1, D] - [1, T, D]  →  [batch, T, D]
     diff = pos[:, None, :] - tools[None, :, :]
     dist_sq = jnp.sum(diff**2, axis=-1)
-    thermal_scale = 2.0 * (sigma**2)
-    potential = jnp.exp(-dist_sq / thermal_scale)
-    return jnp.sum(potential, axis=-1)  # [batch]
+
+    # Weierstrass smoothing matches Heat Kernel: exp(-||x-t||² / 4σ)
+    thermal_scale = 4.0 * sigma
+    kernel = jnp.exp(-dist_sq / thermal_scale)
+
+    # Normalisation: 1 / sqrt(4πσ)
+    norm = jnp.sqrt(4.0 * jnp.pi * sigma)
+
+    # Smoothed manifold f~(x)
+    smoothed_values = (kernel * scores) / norm
+    return jnp.sum(smoothed_values, axis=-1)  # [batch]
 
 
 # ------------------------------------------------------------------
@@ -52,6 +65,7 @@ def orion_force(pos: jax.Array, state: OrionState) -> jax.Array:
     return jax.grad(lambda p: jnp.sum(weierstrass_potential(None, p, {
         "embeddings": state.embeddings,
         "temperature": state.temperature,
+        "scores": state.scores,
     })))(pos)
 
 
@@ -84,18 +98,7 @@ def make_orion_solver(embedding_dim: int = 512, num_tools: int = 128, temp: floa
     init_state = OrionState(
         embeddings=jax.random.normal(key, (num_tools, embedding_dim)),
         temperature=temp,
+        scores=jnp.ones(num_tools),
         density=jnp.zeros(embedding_dim),
     )
     return jax.jit(step_fn), init_state
-
-# --------------------------------
-from synthfuse.alchemj.plugins.orion import make_orion_stcl
-import jax
-
-embeds = jax.random.normal(jax.random.PRNGKey(0), (128, 64))
-z0 = jax.random.normal(jax.random.PRNGKey(1), (64,))
-
-step, state = make_orion_stcl(embeds, z0, beta_init=0.8, sigma_init=1.2)
-
-# fuse inside any spell
-big_step = compile_spell("(𝕎 ⊗ 𝕊𝕋 ⊗ ℍ)(beta=0.8, sigma=1.2, iteration=iter)")

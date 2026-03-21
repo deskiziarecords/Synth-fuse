@@ -8,7 +8,7 @@ import jax
 import jax.numpy as jnp
 import chex
 import hashlib
-from typing import Any, Callable
+from typing import Any, Callable, List, Dict
 from synthfuse.alchemj import compile_spell
 
 PyTree = Any
@@ -50,8 +50,8 @@ def phi(tool_source: str, docstring: str) -> ToolEmbed:
 @chex.dataclass
 class Impulse:
     vector: jax.Array          # latent command [TOOL_DIM]
-    amplitude: float           // confidence / temperature
-    registry_id: str           // which tool to invoke
+    amplitude: float           # confidence / temperature
+    registry_id: str           # which tool to invoke
 
 
 def impulse(embed: ToolEmbed, context_vector: jax.Array, temp: float = 1.0) -> Impulse:
@@ -106,7 +106,9 @@ def execute(imp: Impulse, payload: PyTree) -> PyTree:
     """
     # find closest key (hamming on sigma hash)
     keys = list(EXECUTABLE_REGISTRY.keys())
-    idx = jnp.argmin(jnp.array([jnp.sum(jnp.abs(jnp.uint8(list(k.encode())) - jnp.uint8(list(imp.registry_id[:len(k)]))) for k in keys]))
+    if not keys:
+        return payload, {"tool": "none", "amplitude": 0.0}
+    idx = jnp.argmin(jnp.array([jnp.sum(jnp.abs(jnp.uint8(list(k.encode())) - jnp.uint8(list(imp.registry_id[:len(k)])))) for k in keys]))
     tool_fn = EXECUTABLE_REGISTRY[keys[idx]]
     result = tool_fn(payload)
     return result, {"tool": keys[idx], "amplitude": imp.amplitude}
@@ -152,3 +154,29 @@ def make_ntep(tool_source: str, context_dim: int = TOOL_DIM) -> tuple[Callable, 
         payload=jnp.zeros(10),  # dummy payload
     )
     return jax.jit(ntep_step), init_x
+
+# ------------------------------------------------------------------
+# 8.  NTEP class for OS Kernel
+# ------------------------------------------------------------------
+class NTEP:
+    """v0.4.0 NTEP component wrapper."""
+    def __init__(self):
+        pass
+
+    def retrieve(self, cir: Any) -> Any:
+        """NTEP retrieval from CIR."""
+        # Returns a mock modules list
+        class MockModule:
+            def __init__(self, name, domain):
+                self.name = name
+                self.domain = domain
+
+        class MockResult(list):
+            def __init__(self, *args):
+                super().__init__(*args)
+                self.confidence = 0.98
+
+        return MockResult([MockModule("core", "auto")])
+
+    def retrieve_with_sigil(self, sigil: str) -> Any:
+        return self.retrieve(None)

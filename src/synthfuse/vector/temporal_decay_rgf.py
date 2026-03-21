@@ -2,12 +2,10 @@
 import jax
 import jax.numpy as jnp
 from jax import jit, grad, vmap
-from jax.experimental import optimizers
+from jax.example_libraries import optimizers
 import flax.linen as nn
 from typing import Callable, Tuple, Dict
 from dataclasses import dataclass
-from synthfuse.solvers.rgf_f import MatrixGreenFunction, SpatiotemporalGraph
-from synthfuse.rl.ppo_graph import PPOGraphOptimizer
 
 @dataclass
 class RGFTemporalState:
@@ -71,6 +69,7 @@ class SpatiotemporalDecayGraph:
         self.max_nodes = max_nodes
         self.dim = dim
         self.nodes: Dict[int, RGFTemporalState] = {}
+        self.id_to_node: Dict[str, int] = {}
         self.adjacency = jnp.zeros((max_nodes, max_nodes))
         self.edge_features = jnp.zeros((max_nodes, max_nodes, 3))  # [dist, type, init_weight]
         self.current_time = 0.0
@@ -79,6 +78,7 @@ class SpatiotemporalDecayGraph:
                    uncertainty: jnp.ndarray = None) -> int:
         """Add new vector to graph, return node index."""
         node_idx = len(self.nodes)
+        self.id_to_node[vector_id] = node_idx
         if uncertainty is None:
             uncertainty = jnp.eye(self.dim) * 0.1  # Default uncertainty
             
@@ -266,11 +266,8 @@ class RGFTemporalDecay:
         if query_time is None:
             query_time = self.graph.current_time
             
-        # Find node by ID (simplified - use hash map in production)
-        node_idx = None
-        for idx, state in self.graph.nodes.items():
-            # Match by vector content similarity (or maintain ID mapping)
-            pass
+        # Find node by ID
+        node_idx = self.graph.id_to_node.get(vector_id)
             
         if node_idx is None:
             raise ValueError(f"Vector {vector_id} not found")
