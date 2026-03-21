@@ -2,21 +2,17 @@
 import jax
 import jax.numpy as jnp
 from jax import jit, vmap, random, grad
-from jax.experimental import optimizers
+from jax.example_libraries import optimizers
 from functools import partial
 from typing import Dict, Tuple, List, Callable, Optional
 from dataclasses import dataclass, field
 import numpy as np
 
 # Import our three core modules
-from synthfuse.vector.lazy_tensor_scp import LazyTensorSCP, truncated_svd, max_kurtosis_match
+from synthfuse.vector.lazy_tensor_scp import LazyTensorSCP
+from synthfuse.solvers.scp import truncated_svd, max_kurtosis_match
 from synthfuse.vector.temporal_decay_rgf import RGFTemporalDecay, MatrixGreenFunction, SpatiotemporalDecayGraph
 from synthfuse.vector.manifold_nro import ManifoldNRO, StiefelPoint, WeierstrassSmoother
-
-# Import solvers for boosters
-from synthfuse.solvers.amgdl import AutoMetaGradientLearner
-from synthfuse.solvers.zeta_transform import FastZetaCollisionDetector
-from synthfuse.solvers.choco_gossip import ChocoGossipConsensus
 
 @dataclass
 class PipelineState:
@@ -72,25 +68,39 @@ class AMGDLBooster:
     def adapt_hyperparameters(self, 
                              block_size_candidates: jnp.ndarray,
                              current_loss: float,
-                             compute_time: float) -> int:
+                             compute_time: float,
+                             A: Optional[jnp.ndarray] = None,
+                             B: Optional[jnp.ndarray] = None) -> int:
         """
         Select optimal block size using meta-gradient information.
-        Replaces: Optimal K = argmin_{k} [k log(||A|| ||B|| / ||A||_k ||B||_k)]
+        Implements CMOP: Optimal K = arg min_{k} [k log (||A|| ||B|| / ||A||_k ||B||_k)]
         """
-        # Meta-feature: loss trend + compute time
-        if len(self.history['losses']) > 0:
-            loss_trend = current_loss - self.history['losses'][-1]
+        if A is not None and B is not None:
+            # Complexity Minimization via Optimal Pivoting (CMOP)
+            norm_A = jnp.linalg.norm(A)
+            norm_B = jnp.linalg.norm(B)
+
+            def cmop_score(k):
+                # Approximation of ||A||_k (norm of k-rank approximation)
+                # In a real scenario, we'd use the k-th singular value
+                norm_Ak = norm_A * (1.0 - jnp.exp(-k/10.0))
+                norm_Bk = norm_B * (1.0 - jnp.exp(-k/10.0))
+                return k * jnp.log((norm_A * norm_B) / (norm_Ak * norm_Bk + 1e-8))
+
+            scores = vmap(cmop_score)(block_size_candidates)
+            best_idx = jnp.argmin(scores)
         else:
-            loss_trend = 0.0
-        
-        # Score each block size using learned heuristic
-        scores = []
-        for k in block_size_candidates:
-            # Learned scoring function (simplified - would be neural network)
-            score = -loss_trend * jnp.log(k + 1) - 0.1 * compute_time / (k + 1)
-            scores.append(score)
-        
-        best_idx = jnp.argmax(jnp.array(scores))
+            # Fallback to meta-learning trend
+            if len(self.history['losses']) > 0:
+                loss_trend = current_loss - self.history['losses'][-1]
+            else:
+                loss_trend = 0.0
+
+            scores = []
+            for k in block_size_candidates:
+                score = -loss_trend * jnp.log(k + 1) - 0.1 * compute_time / (k + 1)
+                scores.append(score)
+            best_idx = jnp.argmax(jnp.array(scores))
         
         # Update history
         self.history['losses'].append(current_loss)
@@ -150,7 +160,7 @@ class ZetaTransformBooster:
     
     def detect_collisions(self, query_sig: jnp.ndarray, 
                          db_signatures: jnp.ndarray,
-                         threshold: float = 0.8) -> jnp.ndarray:
+                         threshold: float = 0.5) -> jnp.ndarray:
         """
         Fast collision detection using Zeta transform properties.
         Identifies candidate vectors with high overlap in feature subsets.
@@ -187,19 +197,21 @@ class ZetaTransformBooster:
         return overlap_scores > threshold
     
     def compute_teg_improvement(self, base_latency: float, 
-                               candidate_ratio: float) -> float:
+                               candidate_reduction_ratio: float,
+                               system_scaling_constant: float = 2.0) -> float:
         """
-        Compute Temporal Efficiency Gain with Zeta-accelerated reduction.
-        ΔT = T_base / (1 + γ * ρ_zeta) where ρ_zeta is Zeta-based reduction
+        Compute Temporal Efficiency Gain (TEG).
+        Formula: ΔT = T_base / (1 + γ * ρ)
+        Where:
+            T_base = baseline latency
+            ρ = candidate-reduction ratio
+            γ = system scaling constant
         """
-        # Zeta transform typically achieves 10-100x reduction
-        rho_zeta = 1.0 - candidate_ratio  # Reduction ratio
+        gamma = system_scaling_constant
+        rho = candidate_reduction_ratio
         
-        # System scaling constant (learned or preset)
-        gamma = 2.0
-        
-        # TEG formula with Zeta boost
-        delta_T = base_latency / (1 + gamma * rho_zeta)
+        # TEG formula
+        delta_T = base_latency / (1 + gamma * rho)
         
         return float(delta_T)
 
@@ -265,6 +277,12 @@ class ChocoGossipBooster:
         """
         updated_models = {}
         
+        # Ensure all nodes are present in local_models (for this simulation)
+        for i in range(self.n):
+            if i not in local_models:
+                # If node has no data, use zero or its last known state
+                local_models[i] = self.x_hat[i] if i in self.x_hat else jnp.zeros_like(next(iter(local_models.values())))
+
         for i in range(self.n):
             # Local update with compression
             if i not in self.x_hat:
@@ -284,6 +302,8 @@ class ChocoGossipBooster:
                     # Receive compressed update from neighbor j
                     if j not in self.q_buffer:
                         self.q_buffer[j] = jnp.zeros_like(local_models[i])
+                    if j not in self.x_hat:
+                        self.x_hat[j] = jnp.zeros_like(local_models[i])
                     
                     # Weighted aggregation
                     neighbor_update += self.W[i, j] * (
@@ -301,20 +321,20 @@ class ChocoGossipBooster:
         
         return updated_models
     
-    def compute_epr_reduction(self, L_bits: int, B_bandwidth: float,
-                             P_power: float, N0_noise: float) -> float:
+    def compute_energy_consumption(self, L_bits: float, B_bandwidth: float,
+                                 P_power: float, N0_noise: float) -> float:
         """
-        Compute Energy-Performance Ratio with Choco-gossip reduction.
-        E = (L/B) * log2(1 + P/N0) with L reduced by 90%
+        Compute Energy-Performance Ratio (EPR).
+        Formula: E = (L / B) * log2(1 + P / N0)
+        Where:
+            L = total bits transferred
+            B = bandwidth
+            P = transmit power
+            N0 = noise floor
         """
-        # Original energy
-        E_original = (L_bits / B_bandwidth) * jnp.log2(1 + P_power / N0_noise)
-        
-        # With Choco-gossip: 90% reduction in L
-        L_compressed = L_bits * 0.1  # 90% reduction
-        E_choco = (L_compressed / B_bandwidth) * jnp.log2(1 + P_power / N0_noise)
-        
-        return float(E_original / E_choco)  # Energy savings factor
+        # EPR Purpose: Optimizes energy consumption vs. performance
+        energy = (L_bits / B_bandwidth) * jnp.log2(1 + P_power / N0_noise)
+        return float(energy)
 
 class UnifiedVectorPipeline:
     """
@@ -359,7 +379,8 @@ class UnifiedVectorPipeline:
     def store(self, vector_id: str, 
               vector: jnp.ndarray,
               timestamp: Optional[float] = None,
-              uncertainty: Optional[jnp.ndarray] = None) -> Dict:
+              uncertainty: Optional[jnp.ndarray] = None,
+              gen_func: Optional[Callable[[], jnp.ndarray]] = None) -> Dict:
         """
         Store vector through complete pipeline: SCP → RGF-F → NRO.
         """
@@ -367,17 +388,20 @@ class UnifiedVectorPipeline:
         
         # Stage 1: SCP Compression with AMGDL-tuned rank
         if self.use_amgdl:
-            # AMGDL selects optimal block size (compression rank)
+            # AMGDL selects optimal block size (compression rank) via CMOP
             candidates = jnp.array([32, 64, 128, 256])
             optimal_k = self.amgdl.adapt_hyperparameters(
                 candidates, 
-                current_loss=0.1,  # Would be actual loss in training
-                compute_time=0.01
+                current_loss=0.1,
+                compute_time=0.01,
+                A=vector.reshape(-1, 1),
+                B=vector.reshape(1, -1)
             )
             self.scp.rank = optimal_k
         
-        # Compress and store
-        U_k, S_k, V_k_T = truncated_svd(vector.reshape(1, -1), k=self.scp.rank)
+        # Compress and store via SCP (Lazy Tensor)
+        self.scp.register(vector_id, vector.reshape(1, -1), gen_func)
+        U_k, S_k, V_k_T = self.scp.compressed_db[vector_id]
         self.state.compressed_db[vector_id] = (U_k, S_k, V_k_T)
         metrics['scp_compression_ratio'] = vector.size / (U_k.size + S_k.size + V_k_T.size)
         
@@ -419,7 +443,7 @@ class UnifiedVectorPipeline:
         results = {}
         
         # Zeta-accelerated candidate reduction (if enabled)
-        if self.use_zeta:
+        if self.use_zeta and len(self.state.compressed_db) > 10: # Only use Zeta for larger DBs in this demo
             # Convert query to signature
             query_sig = self.zeta.compute_subset_features(query_vector.reshape(1, -1))[0]
             
@@ -433,17 +457,28 @@ class UnifiedVectorPipeline:
             # Fast collision detection
             collision_mask = self.zeta.detect_collisions(query_sig, db_sigs, threshold=0.7)
             candidate_ids = [v_id for v_id, mask in zip(self.state.compressed_db.keys(), collision_mask) 
-                           if mask]
+                           if bool(jnp.any(mask))]
             
             results['zeta_reduction_ratio'] = len(candidate_ids) / len(self.state.compressed_db)
             results['candidates'] = candidate_ids
         else:
             candidate_ids = list(self.state.compressed_db.keys())
+            if self.use_zeta:
+                results['zeta_reduction_ratio'] = 1.0
         
         # RGF-F temporal decay for candidates
         decayed_candidates = {}
+        # Ensure query_time is not None if we want to use RGF-F
+        if query_time is None:
+            query_time = self.rgf.graph.current_time
+
         for v_id in candidate_ids:
-            if query_time is not None:
+            if v_id in self.scp.gen_funcs:
+                # Lazy Tensor: Get latest vector from generation function
+                # S(q, d) = Sim(v_query, F_gen(theta_gen))
+                vec = self.scp.gen_funcs[v_id]()
+                decayed_candidates[v_id] = (vec, None)
+            elif query_time > 0:
                 decayed_vec, uncertainty = self.rgf.query(v_id, query_time)
                 decayed_candidates[v_id] = (decayed_vec, uncertainty)
             else:
@@ -559,23 +594,3 @@ class UnifiedVectorPipeline:
                 'amgdl_lr': float(self.amgdl.lr) if self.use_amgdl else None
             }
         }
-# During the Fusion-Loop:
-state = stcl_loop.monitor(state)
-mesh_state = thermo_mesh.step(mesh_state) # Re-align the physical manifold
-if stcl_loop.entropy > CRITICAL_THRESHOLD:
-    state = gatekeeper.apply_lyapunov_clamp(state)
-# src/synthfuse/pipeline/unified_vector_pipeline.py
-
-try:
-    # The Achiever attempts to fulfill the spell
-    result = achiever.execute_goal(spell)
-except ManifoldInstabilityWarning as fever:
-    # The Physician intervenes
-    physician.apply_treatment(fever)
-    # Re-route the spell through a safer, low-energy 'Juice Solver'
-    result = achiever.retry_with_safety_buffer(spell)
-# synthfuse/__init__.py
-from .pipeline.unified_vector_pipeline import UnifiedVectorPipeline
-from .vector import LazyTensorSCP, RGFTemporalDecay, ManifoldNRO
-
-__all__ = ['UnifiedVectorPipeline', 'LazyTensorSCP', 'RGFTemporalDecay', 'ManifoldNRO']

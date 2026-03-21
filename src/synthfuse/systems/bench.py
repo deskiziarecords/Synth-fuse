@@ -34,9 +34,32 @@ class LunarLander:
     def init(self, key: jax.Array, n: int) -> jax.Array:
         return jax.random.normal(key, (n, 8))
 
+class Humanoid:
+    name = "Humanoid-v4"
+    def __call__(self, x: jax.Array) -> float:
+        # Placeholder for complex humanoid balance objective
+        return jnp.linalg.norm(x)
+    def init(self, key: jax.Array, n: int) -> jax.Array:
+        return jax.random.normal(key, (n, 376)) # Humanoid-v4 observation space roughly
+
 
 # ------------------------------------------------------------------
-# 2.  Combinatorial
+# 2.  Numerical / HPC
+# ------------------------------------------------------------------
+class MatrixInversion:
+    name = "MatrixInversion-4096"
+    def __init__(self, size: int = 4096):
+        self.size = size
+    def __call__(self, x: jax.Array) -> float:
+        # fitness = error in inversion AX = I
+        # x is the proposed inverse
+        A = jnp.eye(self.size) # simplified anchor
+        return jnp.linalg.norm(A @ x - jnp.eye(self.size))
+    def init(self, key: jax.Array, pop: int) -> jax.Array:
+        return jax.random.normal(key, (pop, self.size, self.size))
+
+# ------------------------------------------------------------------
+# 3.  Combinatorial
 # ------------------------------------------------------------------
 class TSP:
     name = "TSP-200"
@@ -55,7 +78,7 @@ class TSP:
 
 
 # ------------------------------------------------------------------
-# 3.  Emergent behaviour probes
+# 4.  Emergent behaviour probes
 # ------------------------------------------------------------------
 def decentralization_probe(step_fn: Callable, state: PyTree, steps: int) -> float:
     """
@@ -63,7 +86,10 @@ def decentralization_probe(step_fn: Callable, state: PyTree, steps: int) -> floa
     Returns ΔH = H_0 - H_final  (bits)
     """
     def entropy(x):
-        p = jnp.abs(x) / jnp.sum(jnp.abs(x))
+        # x might be a SwarmState or similar PyTree
+        # We'll flatten it to compute entropy over all components
+        flat, _ = jax.flatten_util.ravel_pytree(x)
+        p = jnp.abs(flat) / jnp.sum(jnp.abs(flat))
         p = jnp.where(p == 0, 1e-12, p)
         return -jnp.sum(p * jnp.log2(p))
 
@@ -77,15 +103,38 @@ def decentralization_probe(step_fn: Callable, state: PyTree, steps: int) -> floa
         return (s, k2), None
 
     (state_final, _), _ = jax.lax.scan(body, (state, key), jnp.arange(steps))
-    return entropy(state) - entropy(state_final)
+    return float(H0 - entropy(state_final))
+
+def thermal_balancing_probe(step_fn: Callable, state: PyTree, steps: int) -> float:
+    """
+    Measures spontaneous reduction in thermal (gradient) variance.
+    Returns ΔVar(∇T)
+    """
+    def thermal_variance(x):
+        flat, _ = jax.flatten_util.ravel_pytree(x)
+        return jnp.var(flat)
+
+    V0 = thermal_variance(state)
+    key = jax.random.PRNGKey(0)
+
+    def body(carry, _):
+        s, k = carry
+        k1, k2 = jax.random.split(k)
+        s = step_fn(k1, s, {})
+        return (s, k2), None
+
+    (state_final, _), _ = jax.lax.scan(body, (state, key), jnp.arange(steps))
+    return float(V0 - thermal_variance(state_final))
 
 
 # ------------------------------------------------------------------
-# 4.  Runner
+# 5.  Runner
 # ------------------------------------------------------------------
 BENCHMARKS = {
     "rastrigin": Rastrigin,
     "lunar": LunarLander,
+    "humanoid": Humanoid,
+    "matinv": MatrixInversion,
     "tsp": TSP,
 }
 

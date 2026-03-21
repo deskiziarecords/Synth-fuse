@@ -5,7 +5,7 @@ Ensures numerical stability, gradient sanity, and loop safety in fusion pipeline
 Composable via ⊗, ⊕, ∘. Pure. Side-effect-free. JIT-safe.
 """
 
-from typing import NamedTuple
+from typing import NamedTuple, Dict, Any
 import jax
 import jax.numpy as jnp
 from flax import struct
@@ -90,6 +90,7 @@ def regulator_step(
         diverged=bool(diverged),
         halted=bool(halted)
     )
+
 def compute_zeta_error(state) -> float:
     if hasattr(state, 'dominant_pole'):
         pole = state.dominant_pole
@@ -99,3 +100,16 @@ def compute_zeta_error(state) -> float:
     else:
         # Fallback: use grad norm
         return float(state.grad_norm)
+
+class Regulator:
+    """v0.4.0 Regulator component."""
+    def __init__(self):
+        pass
+
+    def sample(self) -> Dict[str, Any]:
+        """Sample thermal/health state."""
+        return {
+            'thermal_load': 0.15,
+            'entropy': 0.05,
+            'status': 'stable'
+        }

@@ -2,7 +2,7 @@
 import jax
 import jax.numpy as jnp
 from jax import jit, grad, vmap, random
-from jax.experimental import optimizers
+from jax.example_libraries import optimizers
 from jax.scipy.linalg import cholesky, solve_triangular
 import flax.linen as nn
 from typing import Tuple, Callable, Optional

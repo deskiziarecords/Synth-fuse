@@ -20,7 +20,7 @@ import subprocess
 # --------------------------------------------------------------
 
 PACKAGE_NAME = "synthfuse"
-VERSION = "0.4.0-unified-field"
+VERSION = "0.5.0"
 AUTHOR = "J. Roberto Jiménez"
 AUTHOR_EMAIL = "tijuanapaint@gmail.com"
 DESCRIPTION = "Unified Field Engineering – A Deterministic Hybrid Organism Architecture"
@@ -87,6 +87,10 @@ setup(
         "numpy>=1.24.0",
         "jax>=0.4.25",
         "jaxlib>=0.4.25",
+        "flax>=0.8.0",
+        "optax>=0.1.7",
+        "chex>=0.1.84",
+        "lark>=1.1.8",
         "aiofiles>=23.0.0",
         "aiohttp>=3.9.0",
         "watchfiles>=0.20.0",
