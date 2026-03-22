@@ -92,3 +92,7 @@ def make_open_gate(
     )
     from synthfuse.alchemj import compile_spell
     return compile_spell(spell), None  # stateless
+
+def verify_caller(agent_id: str) -> bool:
+    """Verify agent identity (placeholder)."""
+    return True

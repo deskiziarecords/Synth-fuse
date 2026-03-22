@@ -62,6 +62,19 @@ class Agent(abc.ABC):
         return ForumAgent(self)
 
 
+class LocalAgent(Agent):
+    """
+    Base class for local, on-device agents.
+    Default async implementation wraps synchronous generate.
+    """
+    async def agenerate(
+        self,
+        prompt: Union[str, jnp.ndarray],
+        **kwargs
+    ) -> AgentResponse:
+        return self.generate(prompt, **kwargs)
+
+
 # --- Forum Participation Protocol ---
 class ForumAgent:
     """
