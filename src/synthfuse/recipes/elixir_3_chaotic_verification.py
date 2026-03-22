@@ -92,9 +92,11 @@ class ChaoticVerificationEngine:
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         # Version lock
         import synthfuse
-        if not (synthfuse.__version__.startswith("0.2.0") or synthfuse.__version__.startswith("0.4.0")):
+        if not (synthfuse.__version__.startswith("0.2.0") or
+                synthfuse.__version__.startswith("0.4.0") or
+                synthfuse.__version__.startswith("0.5.0")):
             raise RuntimeError(
-                f"Elixir 3 requires v0.2.0-unified-field or v0.4.0, "
+                f"Elixir 3 requires v0.2.0-unified-field, v0.4.0, or v0.5.0, "
                 f"found {synthfuse.__version__}"
             )
         
