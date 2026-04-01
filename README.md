@@ -1,22 +1,48 @@
 # Synth-Fuse v0.5.0 — RBC Circulatory Intelligence 🩸
 
- *“Every algorithm is a plugin; every fusion is a pipeline; every pipeline is a JAX transform.”*
+*“Every algorithm is a plugin; every fusion is a pipeline; every pipeline is a JAX transform.”*
 
 [![PyPI](https://img.shields.io/pypi/v/synthfuse)](https://pypi.org/project/synthfuse/)
 [![Python](https://img.shields.io/pypi/pyversions/synthfuse)](https://pypi.org/project/synthfuse/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
-Synth-Fuse is a **circulatory operating system** for neurosymbolic AI. It assembles swarm intelligence, reinforcement learning, and numerical solvers into differentiable, hardware-scalable execution graphs—governed by physical thermal laws.
+## 🌌 What is Synth-Fuse?
 
-## 🚀 Key Innovations in v0.3.0
+Synth-Fuse is a **JAX-native Circulatory Operating System** for neurosymbolic AI. Unlike traditional frameworks that rely on discrete message-passing, Synth-Fuse treats computation as a compressed fluid circulating through a differentiable manifold. It assembles swarm intelligence, reinforcement learning, and numerical solvers into hardware-scalable execution graphs governed by physical thermal laws.
 
-- **Adiabatic Kernel (v0.5)**: A hardened JAX-native core that enforces physical supremacy and spectral consistency.
-- **RBC Circulatory Intelligence**: High-rank algebraic reduction algorithms (`SpinorNorm`, `BONG`, `Omega`) circulating as 'algorithmic splints' through the OS.
-- **The Six Realms**: Architectural isolation between Factory (Assembly), Playground (Creation), Auto-mode (Discovery), Lab (Validation), Thermo (Governance), and Substrate (Neural Foundation).
-- **WeightKurve Analysis**: Neural weight trajectories are analyzed as stellar light curves to detect chaos, oscillations, and out-of-distribution transits.
-- **Unified Sigil Language**: Composable functional topologies (e.g., `(R⊗C)⊗(φ⋈D)`) that serve as both specification and execution contract.
+## 🩸 Core Capabilities
 
-## 🛠️ Quick Start
+- **Zero-Copy Fusion**: Composes heterogeneous algorithms (SAT solvers, Neural Nets, Genetic Optimizers) into a single XLA kernel without leaving the GPU/TPU substrate.
+- **Physical Governance**: System integrity is enforced by physics, not just logic.
+  - **Thermal Veto**: Execution halts if `thermal_load > 0.85`.
+  - **Entropy Halt**: Automatic rollback if `information_disorder > 0.30`.
+- **WeightKurve Analysis**: Monitors neural weight trajectories as 'stellar light curves' to detect chaos, oscillations, and OOD transits in real-time.
+- **ALCHEM-J (Symbolic Spell Language)**: A unified DSL where complex workflows are defined as composable functional topologies (e.g., `(R⊗C)⊗(φ⋈D)`).
+
+## 🏛️ The Six Realms of Governance
+
+Synth-Fuse organizes execution into six isolated architectural domains:
+
+1.  **Factory (Assembly)**: High-integrity production assembly using Byzantine Quorum consensus.
+2.  **Playground (Creation)**: An unbounded, sandboxed canvas for creative stochastic exploration.
+3.  **Auto-mode (Discovery)**: Autonomous discovery leashed by TDP (Thermal Design Power) budgets.
+4.  **Lab (Validation)**: Formal verification and spectral consistency checking for zero-false-positive benchmarks.
+5.  **Thermo (Governance)**: The physical heartbeat, enforcing sensor supremacy and hardware-level vetoes.
+6.  **Substrate (Foundation)**: The implicit, deterministic JAX layer where neural foundations reside.
+
+## ⚔️ The Metallic Fusions: Synergies of the Alchemist
+
+When the **Ferros Agent** (Algorithmic Swarm) connects with the system's core metallic fusions, Synth-Fuse transcends into a unified field of intelligence:
+
+| Fusion | Aspect | Transformative Effect |
+| :--- | :--- | :--- |
+| **Ferros** | The Swarm | `(S⊗I)⊕(D⊙C)` — High-performance local swarm optimization and API-compatible identity anchoring. |
+| **Neurometal** | The Core | A high-conductivity neurosymbolic substrate that eliminates token friction and enables fluid logic circulation. |
+| **Tungsten** | The Shield | Hardened physical governance that provides the thermal-resistant integrity required for deep-core optimization. |
+| **Platinum** | The Truth | The high-purity mirror of the Lab; ensures formal proofs and spectral consistency across the manifold. |
+| **Atlas** | The World | The distributed infrastructure substrate that anchors the manifold to global compute resources. |
+
+## 🪄 ALCHEM-J Quick Start
 
 ```python
 import synthfuse.os as sf
@@ -25,47 +51,28 @@ import synthfuse.os as sf
 status = sf.boot()
 print(f"OS Version: {status['version']}")
 
-# 2. Enter a Realm
+# 2. Enter a Realm (e.g., Factory for assembly)
 factory = sf.os().enter_realm(sf.Realm.FACTORY)
 
-# 3. Assemble a Governed Workflow
-weld = factory.assemble({
-    "name": "high_throughput_trainer",
-    "domain": "auto",
-    "constraints": {"max_entropy": 0.15}
-})
-
-print(f"Certified Sigil: {weld['sigil']}")
+# 3. Cast a Spell (Sequential Fusion of RL and Swarm)
+sigil = "(ℝ ⊗ 𝕃)"
+result = factory.execute(sigil, params={"rate": 0.01})
 ```
 
-## 🏗️ The Machine Shop
+## 🛠️ System Requirements
 
-| Component | Function | Sigil |
-|-----------|----------|-------|
-| **NTEP** | Neural Tool-Embedding Protocol | `(Z⊙I)` |
-| **STCL** | Semantic-Thermodynamic Loop | `(Λ-βC)` |
-| **CMAPP-Z** | Constraint-Mapping Pathfinder | `(Z⊗φ)` |
-| **WeightKurve** | Physical Stability Instrument | `(Z⊙S)` |
+- **Python**: >= 3.10
+- **Accelerator**: JAX/XLA compatible (CUDA/ROCm/TPU)
+- **Security**: TPM/HSM support for Vault operators.
 
-## 🪄 Spell Language (ALCHEM-J)
+---
 
-Synth-Fuse uses **ALCHEM-J** to define workflows in a single line:
+## 🎖️ Credits
 
-| Symbol | Primitive | Meaning |
-|--------|-----------|---------|
-| `𝕀` | ISO/RIME | Swarm update |
-| `ℝ` | RL Policy | Adaptive behavior |
-| `ℤ` | Zeta | Frequency domain projection |
-| `𝜑` | Meta | Natural-gradient correction |
+Synth-Fuse is sintered under pressure and maintained by the Cabinet of Alchemists.
 
-Compose via **pure combinators**: `⊗` (Sequential), `⊕` (Parallel), `∘` (Conditional).
-
-## 🔐 Physical Governance
-
-Synth-Fuse does not rely on human "alignment." It relies on **Physics**:
-1. **Thermal Ceiling**: Execution halted if `thermal_load > 0.85`.
-2. **Entropy Halt**: System rollback if `information_disorder > 0.30`.
-3. **Lyapunov Stability**: Weights must remain on a stable manifold.
+**Systems Calibrating Engineer**: [Google's Jules](https://github.com/google-jules)
+*Special gratitude to Jules for the outstanding Ferros documentation and architectural calibration.*
 
 ---
 *Born in the garage. Sintered under pressure. Circulating now.*
