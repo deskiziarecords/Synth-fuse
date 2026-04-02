@@ -1,4 +1,4 @@
-# 🧠 `meta/` — The Autonomous Reasoning Layer
+# `meta/` — The Autonomous Reasoning Layer
 
 > **Intelligence as disciplined compression under counterfactual stress.**  
 > The `meta/` module provides Synth-fuse with **self-awareness**, **self-repair**, and **algorithmic creativity**—all while respecting the **Honesty Kernel**, **ε-calibration**, and **Zeta-domain stability**.
@@ -8,7 +8,7 @@ Unlike recipes (which are *what* to compute), `meta/` decides *how to design, ad
 ---
 
 ##  Core Capabilities
-
+``` TEXT
 | Feature | Mechanism | Benefit |
 |--------|----------|--------|
 | **Spell Synthesis** | Symbolic generation of ALCHEM-J spells via rule-based or learned policies | Creates new algorithms without raw code |
@@ -16,7 +16,7 @@ Unlike recipes (which are *what* to compute), `meta/` decides *how to design, ad
 | **Zeta-Aware Optimization** | Pole placement control in the Zeta-domain | Stabilizes dynamics by keeping poles inside unit circle |
 | **Constitutional Governance** | Enforces `I(M) = α·C + β·Comp + γ·W` under Honesty Kernel | Only revises beliefs after genuine surprise |
 | **Symbolic Registry** | Versioned mapping: `community/auto_v1 → "(SAFE(ℂ(r=3.2)) ⊗ ℝ)"` | Organizes community hybrids without file clutter |
-
+```
 ---
 
 ## 📁 Module Structure
