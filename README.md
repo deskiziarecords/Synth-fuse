@@ -1,4 +1,4 @@
-# Synth-Fuse v0.5.0 — RBC Circulatory Intelligence 🩸
+# Synth-Fuse v0.5.0 — RBC Circulatory Intelligence 
 
 *“Every algorithm is a plugin; every fusion is a pipeline; every pipeline is a JAX transform.”*
 
@@ -6,11 +6,11 @@
 [![Python](https://img.shields.io/pypi/pyversions/synthfuse)](https://pypi.org/project/synthfuse/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
-## 🌌 What is Synth-Fuse?
+## What is Synth-Fuse?
 
 Synth-Fuse is a **JAX-native Circulatory Operating System** for neurosymbolic AI. Unlike traditional frameworks that rely on discrete message-passing, Synth-Fuse treats computation as a compressed fluid circulating through a differentiable manifold. It assembles swarm intelligence, reinforcement learning, and numerical solvers into hardware-scalable execution graphs governed by physical thermal laws.
 
-## 🩸 Core Capabilities
+## Core Capabilities
 
 - **Zero-Copy Fusion**: Composes heterogeneous algorithms (SAT solvers, Neural Nets, Genetic Optimizers) into a single XLA kernel without leaving the GPU/TPU substrate.
 - **Physical Governance**: System integrity is enforced by physics, not just logic.
@@ -59,7 +59,7 @@ sigil = "(ℝ ⊗ 𝕃)"
 result = factory.execute(sigil, params={"rate": 0.01})
 ```
 
-## 🛠️ System Requirements
+## System Requirements
 
 - **Python**: >= 3.10
 - **Accelerator**: JAX/XLA compatible (CUDA/ROCm/TPU)
@@ -67,7 +67,7 @@ result = factory.execute(sigil, params={"rate": 0.01})
 
 ---
 
-## 🎖️ Credits
+##  Credits
 
 Synth-Fuse is sintered under pressure and maintained by the Cabinet of Alchemists.
 
