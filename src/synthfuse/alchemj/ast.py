@@ -251,6 +251,14 @@ def update_param_in_spell(spell: str, symbol: str, param_name: str, new_value: A
     updated_ast = _update_param_in_ast(ast, symbol, param_name, new_value)
     return ast_to_spell(updated_ast)
 
+def tree_size(node: Expr) -> int:
+    """Calculate the total number of nodes in the AST."""
+    if isinstance(node, Primitive):
+        return 1
+    elif isinstance(node, Combinator):
+        return 1 + tree_size(node.left) + tree_size(node.right)
+    return 0
+
 def _update_param_in_ast(node: Expr, symbol: str, param_name: str, new_value: Any) -> Expr:
     if isinstance(node, Primitive):
         if node.symbol == symbol:

@@ -13,7 +13,7 @@ def test_evolution_discovery():
     x_test = jnp.array([1.0, 2.0, 3.0])
     target = x_test * 1.05
 
-    def fitness(ast):
+    def fitness(ast, gen):
         spell = ast_to_spell(ast)
         try:
             fn = compile_spell(spell)
@@ -32,5 +32,5 @@ def test_evolution_discovery():
     print(f"Best spell found: {best_spell}")
 
     # Check if we found something reasonable
-    best_fitness = fitness(best_ast)
+    best_fitness = fitness(best_ast, 10)
     assert best_fitness > -1.0 # Should at least find something better than catastrophic failure

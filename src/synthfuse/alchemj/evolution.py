@@ -73,9 +73,14 @@ def crossover(a: Expr, b: Expr) -> Expr:
     return a
 
 class EvolutionEngine:
-    """Evolutionary Programming over ALCHEM-J ASTs."""
-    def __init__(self, fitness_fn: Callable[[Expr], float]):
+    """Evolutionary Programming over ALCHEM-J ASTs with curriculum learning."""
+    def __init__(
+        self,
+        fitness_fn: Callable[[Expr, int], float],
+        curriculum: Optional[Callable[[int], Dict[str, Any]]] = None
+    ):
         self.fitness_fn = fitness_fn
+        self.curriculum = curriculum
 
     def evolve(self, pop_size: int = 50, generations: int = 20, max_depth: int = 3) -> Expr:
         """Main evolution loop."""
@@ -83,8 +88,11 @@ class EvolutionEngine:
         population = [random_spell(depth=max_depth) for _ in range(pop_size)]
 
         for gen in range(generations):
-            # 2. Evaluation
-            scored = [(self.fitness_fn(s), s) for s in population]
+            # Curriculum step
+            params = self.curriculum(gen) if self.curriculum else {}
+
+            # 2. Evaluation (fitness_fn can handle two-stage or curriculum)
+            scored = [(self.fitness_fn(s, gen), s) for s in population]
             # Sort by fitness (descending)
             scored.sort(reverse=True, key=lambda x: x[0])
 
@@ -114,5 +122,5 @@ class EvolutionEngine:
             # print(f"Gen {gen}: Best score = {scored[0][0]}")
 
         # Final best individual
-        final_best = max(population, key=lambda s: self.fitness_fn(s))
+        final_best = max(population, key=lambda s: self.fitness_fn(s, generations))
         return final_best
