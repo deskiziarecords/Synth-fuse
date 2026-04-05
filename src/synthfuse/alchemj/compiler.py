@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Callable, Any
 import jax
 import jax.numpy as jnp
+from functools import lru_cache
 from .registry import get
 
 PyTree = Any
@@ -25,23 +26,23 @@ class _AST2Jax(Transformer):
     def prim(self, symbol, params):
         op = get(str(symbol))
         # bind params early (static)
-        return lambda key, x, _: op(key, x, params)
+        return lambda key, x, p: op(key, x, params)
 
-    def seq(self, left, right):
+    def seq(self, left, _, right):
         return lambda key, x, p: right(key, left(key, x, p), p)
 
-    def par(self, left, right):
+    def par(self, left, _, right):
         # tree-additive parallel fusion
         return lambda key, x, p: jax.tree.map(
             jnp.add, left(key, x, p), right(key, x, p)
         )
 
-    def guard(self, pred_tree, op):
-        # pred_tree is (lambda_expr) or primitive returning bool PyTree
+    def guard(self, left, _, right):
+        # left is pred_tree (primitive returning bool PyTree or lambda)
         def fn(key, x, p):
-            mask = pred_tree(key, x, p)  # bool or float > 0 → True
+            mask = left(key, x, p)  # bool or float > 0 → True
             return jax.tree.map(
-                lambda o, m: jnp.where(m, o, x), op(key, x, p), mask
+                lambda o, m: jnp.where(m, o, x), right(key, x, p), mask
             )
         return fn
 
@@ -52,20 +53,6 @@ class _AST2Jax(Transformer):
 
     def paren(self, child):
         return child
-
-
-# ---------- public API -------------------------------------------------------
-def compile_spell(source: str) -> StepFn:
-    """source string → JIT-ready StepFn"""
-    tree = _GRAMMAR.parse(source)
-    stepfn = _AST2Jax().transform(tree)
-    return jax.jit(stepfn)
-
-
-#---------2-----
-@v_args(inline=True)
-class _AST2Jax(Transformer):
-    # ------- existing prim / seq / par / guard / paren kept as-is -------
 
     # ------- containers -----------------------------------------------
     def dict(self, *keyvals):
@@ -78,7 +65,7 @@ class _AST2Jax(Transformer):
     def list(self, *items):
         return list(items)
 
-    def params(self, arg_list):
+    def params_list(self, arg_list):
         return arg_list or {}
 
     def no_params(self):
@@ -91,18 +78,27 @@ class _AST2Jax(Transformer):
         return str(name), value
 
     # ------- terminals -------------------------------------------------
-    def NUMBER(self, tok):
+    def number(self, tok):
         # Lark gives str – cast to Python number
         try:
             return int(tok)
         except ValueError:
             return float(tok)
 
-    def STRING(self, tok):
+    def string(self, tok):
         return str(tok).strip('"')
 
-    def BOOLEAN(self, tok):
-        return tok.lower() == "true"
+    def boolean(self, tok):
+        return str(tok).lower() == "true"
 
-    def NAME(self, tok):
+    def name(self, tok):
         return str(tok)
+
+
+# ---------- public API -------------------------------------------------------
+@lru_cache(maxsize=1024)
+def compile_spell(source: str) -> StepFn:
+    """source string → JIT-ready StepFn"""
+    tree = _GRAMMAR.parse(source)
+    stepfn = _AST2Jax().transform(tree)
+    return jax.jit(stepfn)

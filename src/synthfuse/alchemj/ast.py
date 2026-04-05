@@ -69,7 +69,7 @@ class Lexer:
             elif ch in '⊗⊕∘':
                 self.tokens.append(Token('OP', ch, self.pos))
                 self.pos += 1
-            elif ch.isalpha() or ch == '_':
+            elif ch.isalpha() or ch == '_' or ch in 'Δ$§𝕀𝕞𝕡':
                 self.tokens.append(self._read_symbol())
             elif ch.isdigit() or ch == '.':
                 self.tokens.append(self._read_number())
@@ -86,7 +86,7 @@ class Lexer:
 
     def _read_symbol(self) -> Token:
         start = self.pos
-        while self.pos < len(self.text) and (self.text[self.pos].isalnum() or self.text[self.pos] in '𝔻𝕂𝕊𝕍ℝℂℤℍ𝕃𝕀ℛ∇̃𝓜𝓐_'):
+        while self.pos < len(self.text) and (self.text[self.pos].isalnum() or self.text[self.pos] in '𝔻𝕂𝕊𝕍ℝℂℤℍ𝕃𝕀ℛ∇̃𝓜𝓐Δ$§ℕ𝕡𝕞𝔹ΩΣκ_'):
             self.pos += 1
         value = self.text[start:self.pos]
         return Token('SYMBOL', value, start)
