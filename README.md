@@ -1,4 +1,4 @@
-# Synth-Fuse v0.5.0 — RBC Circulatory Intelligence 
+# Synth-Fuse v0.6.0 — RBC Circulatory Intelligence
 
 *“Every algorithm is a plugin; every fusion is a pipeline; every pipeline is a JAX transform.”*
 
@@ -18,6 +18,16 @@ Synth-Fuse is a **JAX-native Circulatory Operating System** for neurosymbolic AI
   - **Entropy Halt**: Automatic rollback if `information_disorder > 0.30`.
 - **WeightKurve Analysis**: Monitors neural weight trajectories as 'stellar light curves' to detect chaos, oscillations, and OOD transits in real-time.
 - **ALCHEM-J (Symbolic Spell Language)**: A unified DSL where complex workflows are defined as composable functional topologies (e.g., `(R⊗C)⊗(φ⋈D)`).
+- **Autonomous Algorithm Discovery**: A JAX-native evolutionary engine that discovers optimal algorithmic structures (spells) via multi-component fitness and meta-learning grammar.
+
+## 🚀 Autonomous Algorithm Discovery Platform
+
+Synth-Fuse v0.6.0 introduces a state-of-the-art platform for automated algorithm synthesis:
+
+- **Evolutionary Spell Search**: Evolves ALCHEM-J ASTs using population-based search, curriculum learning, and two-stage fitness evaluation.
+- **Multi-Component Fitness**: Evaluates algorithms based on **Performance**, **Efficiency** (latency), **Stability** (variance), and **Complexity** (structural regularization).
+- **Meta-Learning Grammar**: A PCFG-style probabilistic grammar that learns successful algorithmic motifs and transition patterns from winning spells.
+- **Distributed Scale**: Built-in support for scalable evaluation across cluster nodes using JSON-serialized AST transport.
 
 ## 🏛️ The Six Realms of Governance
 
