@@ -20,7 +20,7 @@ Synth-Fuse is a **JAX-native Circulatory Operating System** for neurosymbolic AI
 - **ALCHEM-J (Symbolic Spell Language)**: A unified DSL where complex workflows are defined as composable functional topologies (e.g., `(R⊗C)⊗(φ⋈D)`).
 - **Autonomous Algorithm Discovery**: A JAX-native evolutionary engine that discovers optimal algorithmic structures (spells) via multi-component fitness and meta-learning grammar.
 
-## 🚀 Autonomous Algorithm Discovery Platform
+##  Autonomous Algorithm Discovery Platform
 
 Synth-Fuse v0.6.0 introduces a state-of-the-art platform for automated algorithm synthesis:
 
@@ -29,7 +29,7 @@ Synth-Fuse v0.6.0 introduces a state-of-the-art platform for automated algorithm
 - **Meta-Learning Grammar**: A PCFG-style probabilistic grammar that learns successful algorithmic motifs and transition patterns from winning spells.
 - **Distributed Scale**: Built-in support for scalable evaluation across cluster nodes using JSON-serialized AST transport.
 
-## 🏛️ The Six Realms of Governance
+## The Six Realms of Governance
 
 Synth-Fuse organizes execution into six isolated architectural domains:
 
@@ -40,7 +40,7 @@ Synth-Fuse organizes execution into six isolated architectural domains:
 5.  **Thermo (Governance)**: The physical heartbeat, enforcing sensor supremacy and hardware-level vetoes.
 6.  **Substrate (Foundation)**: The implicit, deterministic JAX layer where neural foundations reside.
 
-## ⚔️ The Metallic Fusions: Synergies of the Alchemist
+## The Metallic Fusions: Synergies of the Alchemist
 
 When the **Ferros Agent** (Algorithmic Swarm) connects with the system's core metallic fusions, Synth-Fuse transcends into a unified field of intelligence:
 
@@ -52,7 +52,7 @@ When the **Ferros Agent** (Algorithmic Swarm) connects with the system's core me
 | **Platinum** | The Truth | The high-purity mirror of the Lab; ensures formal proofs and spectral consistency across the manifold. |
 | **Atlas** | The World | The distributed infrastructure substrate that anchors the manifold to global compute resources. |
 
-## 🪄 ALCHEM-J Quick Start
+## ALCHEM-J Quick Start
 
 ```python
 import synthfuse.os as sf
@@ -80,9 +80,10 @@ result = factory.execute(sigil, params={"rate": 0.01})
 ##  Credits
 
 Synth-Fuse is sintered under pressure and maintained by the Cabinet of Alchemists.
+**Author** J. Roberto Jiménez        - tijuanapaint@gmail.com  - @hipotermiah
 
 **Systems Calibrating Engineer**: [Google's Jules](https://github.com/google-jules)
 *Special gratitude to Jules for the outstanding Ferros documentation and architectural calibration.*
 
 ---
-*Born in the garage. Sintered under pressure. Circulating now.*
+*Born from the Series: The monkey and the calculator*
